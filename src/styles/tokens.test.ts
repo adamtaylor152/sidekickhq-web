@@ -28,4 +28,11 @@ describe("Sidekick design system", () => {
     const css = `${read("./tokens.css")}\n${read("./global.css")}`;
     expect(css).not.toMatch(/font-weight:\s*(?:[7-9]00|bold|bolder)/);
   });
+
+  it("keeps page-level warning and error colors behind design tokens", () => {
+    const pageCss = `${read("../pages/industries/[industry].astro")}\n${read("../pages/checkout.astro")}`;
+    expect(pageCss).not.toMatch(/#[0-9a-f]{3,8}/i);
+    expect(read("./tokens.css")).toContain("--sk-color-warning-surface");
+    expect(read("./tokens.css")).toContain("--sk-color-danger-text");
+  });
 });

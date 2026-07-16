@@ -27,7 +27,7 @@ const editions = product ? getProductEditions(product.slug) : [];
 </SliceFrame>
 
 <style>
-  .editions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sk-space-4); }
+  .editions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: var(--sk-space-4); }
   article { position: relative; display: flex; min-height: 38rem; flex-direction: column; padding: var(--sk-space-8); border: 1px solid var(--sk-color-line); border-radius: var(--sk-radius-card); background: var(--sk-color-white); color: var(--sk-color-ink); }
   article.recommended { border-color: var(--sk-color-blue-400); box-shadow: var(--sk-shadow-soft); }
   .badge { position: absolute; top: var(--sk-space-5); right: var(--sk-space-5); padding: var(--sk-space-1) var(--sk-space-3); border-radius: var(--sk-radius-pill); background: var(--sk-color-blue-100); color: var(--sk-color-blue-700); font-size: var(--sk-text-xs); font-weight: 600; }

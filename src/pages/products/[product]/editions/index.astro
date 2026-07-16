@@ -8,7 +8,7 @@ export const getStaticPaths = () => PRODUCTS.filter((product) => getProductEditi
 const { product } = Astro.props;
 ---
 <ProductLayout product={product} activePath={`/products/${product.slug}/editions`}>
-  <section class="intro sk-section"><div class="sk-container sk-container--copy"><p class="sk-eyebrow">{product.name} editions</p><h1 class="sk-display">Start with the right depth. Move up when the operation asks for more.</h1></div></section>
+  <section class="intro sk-section"><div class="sk-container sk-container--copy"><p class="sk-eyebrow">{product.name} plans</p><h1 class="sk-display">Choose by the work you need to run—not by a wall of checkmarks.</h1><p>Each option explains its operating fit, included capabilities, and boundaries. Live catalogue terms remain authoritative at checkout.</p></div></section>
   <EditionComparison slice={{kind:"edition-comparison",theme:"paper",id:"editions"}} product={product} />
 </ProductLayout>
-<style>.intro{background:var(--sk-color-navy-950);color:white}.intro .sk-container{display:grid;gap:var(--sk-space-6)}</style>
+<style>.intro{background:var(--sk-color-navy-950);color:white}.intro .sk-container{display:grid;gap:var(--sk-space-6)}.intro p:last-child{max-width:48rem;color:rgb(255 255 255 / 65%);line-height:1.7}</style>

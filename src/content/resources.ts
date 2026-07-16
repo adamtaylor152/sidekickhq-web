@@ -1,4 +1,5 @@
-import type { ResourceCategory } from "./types";
+import { PRODUCTS } from "./products";
+import type { HelpCategory, ProductSlug, ResourceCategory } from "./types";
 
 export const RESOURCE_CATEGORIES: readonly ResourceCategory[] = [
   {
@@ -42,3 +43,25 @@ export const RESOURCE_CATEGORIES: readonly ResourceCategory[] = [
     ],
   },
 ] as const;
+
+export const HELP_CATEGORIES: readonly HelpCategory[] = RESOURCE_CATEGORIES.map((category) => ({
+  slug: category.slug,
+  name: category.name,
+  description: category.description,
+  products: category.children.map((child) => {
+    const product = PRODUCTS.find(({ slug }) => slug === child.slug);
+    if (!product) throw new Error(`Help Center product ${child.slug} is not registered.`);
+    return {
+      slug: child.slug as ProductSlug,
+      name: child.name,
+      description: product.tagline,
+      sections: [
+        {
+          name: "Start and configure",
+          topics: [`Start with ${child.name}`, "Workspace, roles, and access", "Import, connect, or migrate existing data"],
+        },
+        ...product.featureGroups.map((group) => ({ name: group.title, topics: group.features })),
+      ],
+    };
+  }),
+}));

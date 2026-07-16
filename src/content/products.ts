@@ -10,6 +10,7 @@ const product = (
     { label: "Overview", href: `/products/${definition.slug}` },
     { label: "Features", href: `/products/${definition.slug}#features` },
     { label: "Industries", href: `/products/${definition.slug}#industries` },
+    ...(definition.pricingOfferKeys.length > 0 ? [{ label: "Plans", href: `/products/${definition.slug}/editions` }] : []),
     { label: "Pricing", href: `/pricing#${definition.slug}` },
   ],
 });

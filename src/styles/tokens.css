@@ -20,7 +20,9 @@
   --sk-color-line-dark: rgb(255 255 255 / 14%);
   --sk-color-success: #0c8568;
   --sk-color-warning: #a45708;
+  --sk-color-warning-surface: #fff5da;
   --sk-color-danger: #bc3650;
+  --sk-color-danger-text: #a31919;
   --sk-color-focus: #69b5ff;
 
   --sk-gradient-cape: linear-gradient(135deg, #62afff 0%, #2e70ed 48%, #1654d8 100%);

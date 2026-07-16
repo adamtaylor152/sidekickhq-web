@@ -35,3 +35,20 @@ test("all forty industries are linked from the industry index", async ({ page })
   await page.goto("/industries");
   await expect(page.locator('.industry-grid a')).toHaveCount(40);
 });
+
+test("Help Center narrows a four-level directory without publishing article bodies", async ({ page }) => {
+  await page.goto("/help");
+  await expect(page.getByRole("heading", { name: "Start with the product. Narrow to the job." })).toBeVisible();
+  await page.getByRole("searchbox", { name: "What are you trying to do?" }).fill("Yealink");
+  const voiceHelp = page.locator('details[data-help-slug="voice"]');
+  await expect(voiceHelp).toBeVisible();
+  await expect(voiceHelp).toHaveAttribute("open", "");
+  await expect(page.locator("details[data-help-product]:visible")).toHaveCount(1);
+  await expect(voiceHelp.getByText("Help articles coming in the Customer Help Center publishing phase.")).toBeVisible();
+});
+
+test("every Voice purchase path has a dedicated detail page", async ({ page }) => {
+  await page.goto("/products/voice/editions");
+  await expect(page.getByRole("link", { name: "Full edition details" })).toHaveCount(3);
+  await expect(page.getByText("Optional Poly and Yealink phones")).toBeVisible();
+});

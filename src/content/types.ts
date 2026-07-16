@@ -12,7 +12,13 @@ export type ProductSlug =
   | "desktop"
   | "ai";
 
-export type EditionSlug = "essentials" | "professional" | "enterprise";
+export type EditionSlug =
+  | "essentials" | "professional" | "enterprise"
+  | "business" | "contact-center" | "ai-receptionist"
+  | "processing"
+  | "full-user" | "team-user"
+  | "workstation" | "server" | "cloud-user"
+  | "agent" | "credits-10000";
 
 export type IndustryFamily =
   | "Service and Care"
@@ -152,6 +158,23 @@ export interface ResourceCategory {
     readonly slug: string;
     readonly name: string;
     readonly taskAreas: readonly string[];
+  }[];
+}
+
+export interface HelpCategory {
+  readonly slug: string;
+  readonly name: string;
+  readonly description: string;
+  readonly products: readonly HelpProduct[];
+}
+
+export interface HelpProduct {
+  readonly slug: ProductSlug;
+  readonly name: string;
+  readonly description: string;
+  readonly sections: readonly {
+    readonly name: string;
+    readonly topics: readonly string[];
   }[];
 }
 
