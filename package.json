@@ -12,6 +12,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
+    "media:render": "tsx scripts/render-product-media.ts && tsx scripts/render-industry-media.ts",
+    "media:industries": "tsx scripts/render-industry-media.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
@@ -43,8 +45,13 @@
     "jsdom": "29.1.1",
     "prettier": "3.9.0",
     "prettier-plugin-astro": "0.14.1",
+    "sharp": "0.34.5",
     "typescript": "5.9.3",
     "typescript-eslint": "8.53.0",
+    "tsx": "4.21.0",
     "vitest": "4.1.10"
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
   }
 }
