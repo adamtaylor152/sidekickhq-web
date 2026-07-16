@@ -1,0 +1,10 @@
+.DS_Store
+.astro/
+.env
+.env.*
+!.env.example
+dist/
+node_modules/
+.superpowers/
+playwright-report/
+test-results/
