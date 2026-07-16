@@ -3,7 +3,8 @@
 
 interface ImportMetaEnv {
   readonly PUBLIC_CHECKOUT_ENABLED?: "true" | "false";
-  readonly SIDEKICK_CATALOG_API_URL?: string;
+  readonly HERONET_STOREFRONT_API_URL?: string;
+  readonly HERONET_STOREFRONT_API_KEY?: string;
   readonly SIDEKICK_USE_CATALOG_FIXTURE?: "true" | "false";
 }
 

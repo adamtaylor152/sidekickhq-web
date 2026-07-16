@@ -34,4 +34,22 @@ describe("core marketing pages", () => {
     expect(ai?.faqs.map((faq) => faq.answer).join(" ")).toContain("Voice AI");
     expect(ai?.pricingOfferKeys).toEqual(["ai.agent", "ai.credits.10000"]);
   });
+
+  it("submits checkout through the server bridge and never collects raw card credentials", () => {
+    const checkout = source("src/pages/checkout.astro");
+    expect(checkout).toContain('fetch("/api/orders"');
+    expect(checkout).not.toContain("Card number");
+    expect(checkout).not.toContain("Expiry and security code");
+    expect(checkout).toContain("secure payment page");
+    expect(checkout).toContain('get("hardware")');
+    expect(checkout).toContain("offerKey:selectedHardware");
+    expect(existsSync(path("src/pages/api/orders.ts"))).toBe(true);
+  });
+
+  it("hydrates public prices from the authoritative server catalog", () => {
+    const layout = source("src/layouts/SiteLayout.astro");
+    expect(layout).toContain('fetch("/api/catalog"');
+    expect(layout).toContain("priceComponents");
+    expect(layout).toContain("unitAmountCents");
+  });
 });
