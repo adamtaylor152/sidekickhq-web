@@ -1,0 +1,17 @@
+---
+import ProductMiniNav from "@/components/site/ProductMiniNav.astro";
+import type { ProductDefinition } from "@/content/types";
+import SiteLayout from "./SiteLayout.astro";
+
+interface Props {
+  product: ProductDefinition;
+  activePath?: string;
+}
+
+const { product, activePath } = Astro.props;
+---
+
+<SiteLayout title={product.seo.title} description={product.seo.description} canonicalPath={`/products/${product.slug}`} theme="dark">
+  <ProductMiniNav product={product} activePath={activePath} />
+  <slot />
+</SiteLayout>

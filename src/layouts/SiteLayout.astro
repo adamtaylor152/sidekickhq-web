@@ -1,0 +1,42 @@
+---
+import AnnouncementBar from "@/components/site/AnnouncementBar.astro";
+import Footer from "@/components/site/Footer.astro";
+import Header from "@/components/site/Header.astro";
+import SkipLink from "@/components/ui/SkipLink.astro";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  theme?: "light" | "dark";
+  structuredData?: Record<string, unknown> | readonly Record<string, unknown>[];
+}
+
+const { title, description, canonicalPath, theme = "light", structuredData } = Astro.props;
+const canonical = new URL(canonicalPath, Astro.site ?? "https://sidekickhq.ca");
+const structuredDataJson = structuredData
+  ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en-CA" data-theme={theme}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#030d22" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/brand/sidekick-mark-color.svg" type="image/svg+xml" />
+    <title>{title}</title>
+    {structuredDataJson && <script is:inline type="application/ld+json" set:html={structuredDataJson} />}
+  </head>
+  <body>
+    <SkipLink />
+    <AnnouncementBar />
+    <Header />
+    <main id="main-content"><slot /></main>
+    <Footer />
+  </body>
+</html>

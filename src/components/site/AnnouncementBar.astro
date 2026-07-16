@@ -1,0 +1,30 @@
+<aside class="announcement" aria-label="Trial offer">
+  <a href="/pricing">
+    <span>30 days. No credit card. Eligible software only.</span>
+    <span aria-hidden="true">Explore pricing&nbsp;→</span>
+  </a>
+</aside>
+
+<style>
+  .announcement {
+    border-bottom: 1px solid var(--sk-color-line-dark);
+    background: var(--sk-color-navy-950);
+    color: rgb(255 255 255 / 82%);
+    font-size: var(--sk-text-xs);
+  }
+
+  .announcement a {
+    display: flex;
+    justify-content: center;
+    gap: var(--sk-space-4);
+    padding: 0.45rem var(--sk-gutter);
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .announcement a:hover { color: var(--sk-color-white); }
+
+  @media (max-width: 34rem) {
+    .announcement a span:last-child { display: none; }
+  }
+</style>

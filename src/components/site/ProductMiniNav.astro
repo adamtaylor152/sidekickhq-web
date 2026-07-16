@@ -1,0 +1,31 @@
+---
+import type { ProductDefinition } from "@/content/types";
+import Button from "@/components/ui/Button.astro";
+
+interface Props {
+  product: ProductDefinition;
+  activePath?: string;
+}
+
+const { product, activePath = Astro.url.pathname } = Astro.props;
+---
+
+<nav class="product-nav" aria-label={`${product.name} navigation`}>
+  <div class="sk-container product-nav__inner">
+    <a class="product-name" href={`/products/${product.slug}`}>{product.name}</a>
+    <div class="product-links">
+      {product.miniNav.map((item) => <a class:list={{ active: activePath === item.href }} href={item.href}>{item.label}</a>)}
+    </div>
+    <Button href={product.cta.href} size="small">{product.cta.trialEligible ? "Start Trial" : "Get Started"}</Button>
+  </div>
+</nav>
+
+<style>
+  .product-nav { position: sticky; z-index: 40; top: var(--sk-header-height); border-bottom: 1px solid var(--sk-color-line); background: rgb(255 255 255 / 93%); backdrop-filter: blur(1rem); }
+  .product-nav__inner { display: flex; min-height: 3.4rem; align-items: center; gap: var(--sk-space-6); }
+  .product-name { margin-right: auto; font-family: var(--sk-font-heading); font-size: var(--sk-text-sm); font-weight: 600; text-decoration: none; }
+  .product-links { display: flex; align-items: center; gap: var(--sk-space-5); }
+  .product-links a { color: var(--sk-color-ink-muted); font-size: var(--sk-text-xs); text-decoration: none; }
+  .product-links a:hover, .product-links a.active { color: var(--sk-color-blue-600); }
+  @media (max-width: 48rem) { .product-links { display: none; } }
+</style>

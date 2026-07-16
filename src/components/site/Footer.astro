@@ -1,0 +1,58 @@
+---
+import { INDUSTRIES } from "@/content/industries";
+import { LEGAL_LINKS } from "@/content/legal";
+import { PRODUCTS } from "@/content/products";
+---
+
+<footer class="footer">
+  <div class="sk-container footer__top">
+    <div class="footer__brand">
+      <img src="/brand/sidekick-lockup-color-dark.svg" width="210" height="54" alt="Sidekick" />
+      <p>Every part of your business, working together—with AI built in.</p>
+      <a href="/contact">Sidekick HQ Inc.<br />Canada</a>
+    </div>
+    <div>
+      <h2>Products</h2>
+      <ul>{PRODUCTS.slice(0, 6).map((product) => <li><a href={`/products/${product.slug}`}>{product.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <h2>More products</h2>
+      <ul>{PRODUCTS.slice(6).map((product) => <li><a href={`/products/${product.slug}`}>{product.name}</a></li>)}</ul>
+    </div>
+    <div>
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="/industries">All industries</a></li>
+        {INDUSTRIES.slice(0, 4).map((industry) => <li><a href={`/industries/${industry.slug}`}>{industry.name}</a></li>)}
+        <li><a href="/resources">Resources</a></li>
+        <li><a href="/help">Customer Help Center</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sk-container footer__bottom">
+    <p>© {new Date().getFullYear()} Sidekick HQ Inc.</p>
+    <nav aria-label="Legal">
+      {LEGAL_LINKS.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer { padding-top: var(--sk-section-space); background: var(--sk-color-navy-950); color: var(--sk-color-white); }
+  .footer__top { display: grid; grid-template-columns: minmax(16rem, 1.4fr) repeat(3, minmax(9rem, 0.7fr)); gap: clamp(2rem, 5vw, 5rem); padding-bottom: var(--sk-space-20); }
+  .footer__brand img { width: 10.5rem; height: auto; }
+  .footer__brand p { max-width: 25rem; margin-top: var(--sk-space-6); color: rgb(255 255 255 / 66%); font-size: var(--sk-text-lg); }
+  .footer__brand a { display: inline-block; margin-top: var(--sk-space-8); color: var(--sk-color-blue-300); font-size: var(--sk-text-sm); text-decoration: none; }
+  h2 { margin-bottom: var(--sk-space-5); color: rgb(255 255 255 / 45%); font-family: var(--sk-font-body); font-size: var(--sk-text-xs); letter-spacing: var(--sk-tracking-wide); text-transform: uppercase; }
+  ul { display: grid; gap: var(--sk-space-3); padding: 0; margin: 0; list-style: none; }
+  li a { color: rgb(255 255 255 / 78%); font-size: var(--sk-text-sm); text-decoration: none; }
+  li a:hover { color: var(--sk-color-blue-300); }
+  .footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: var(--sk-space-6); padding-block: var(--sk-space-6); border-top: 1px solid var(--sk-color-line-dark); color: rgb(255 255 255 / 48%); font-size: var(--sk-text-xs); }
+  .footer__bottom nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--sk-space-5); }
+  .footer__bottom a { text-decoration: none; }
+  .footer__bottom a:hover { color: var(--sk-color-white); }
+
+  @media (max-width: 58rem) { .footer__top { grid-template-columns: repeat(2, minmax(0, 1fr)); } .footer__brand { grid-column: 1 / -1; } }
+  @media (max-width: 36rem) { .footer__top { grid-template-columns: 1fr; } .footer__brand { grid-column: auto; } .footer__bottom { align-items: flex-start; flex-direction: column; } .footer__bottom nav { justify-content: flex-start; } }
+</style>

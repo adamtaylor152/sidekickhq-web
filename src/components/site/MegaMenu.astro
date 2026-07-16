@@ -1,0 +1,59 @@
+---
+import type { NavigationItem } from "@/content/types";
+import Icon from "@/components/ui/Icon.astro";
+
+interface Props {
+  item: NavigationItem;
+}
+
+const { item } = Astro.props;
+---
+
+<details class="mega-menu">
+  <summary>
+    <span>{item.label}</span>
+    <Icon name="chevron" size={16} />
+  </summary>
+  <div class="panel">
+    <div class="panel__intro">
+      <p class="sk-eyebrow">Explore {item.label}</p>
+      <h2>{item.description ?? `Find the right Sidekick path for your business.`}</h2>
+      <a href={item.href}>View all {item.label.toLowerCase()} <span aria-hidden="true">→</span></a>
+    </div>
+    <ul>
+      {item.children?.map((child) => (
+        <li>
+          <a href={child.href}>
+            <strong>{child.label}</strong>
+            {child.description && <span>{child.description}</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</details>
+
+<style>
+  .mega-menu { position: static; }
+  summary { display: flex; align-items: center; gap: var(--sk-space-1); padding: var(--sk-space-2); border-radius: var(--sk-radius-sm); cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary :global(svg) { transition: rotate var(--sk-duration-fast) var(--sk-ease-standard); }
+  details[open] summary :global(svg) { rotate: 180deg; }
+  .panel { position: absolute; z-index: 30; top: calc(100% - 0.25rem); left: 50%; display: grid; grid-template-columns: minmax(15rem, 0.7fr) minmax(32rem, 1.6fr); width: min(calc(100vw - (2 * var(--sk-gutter))), var(--sk-container-page)); max-height: min(72vh, 42rem); overflow: auto; translate: -50% 0; border: 1px solid var(--sk-color-line-dark); border-radius: var(--sk-radius-card); background: var(--sk-color-navy-900); box-shadow: var(--sk-shadow-stage); color: var(--sk-color-white); }
+  .panel__intro { padding: var(--sk-space-10); background: radial-gradient(circle at 10% 90%, rgb(81 162 250 / 18%), transparent 48%); }
+  .panel__intro h2 { max-width: 15ch; margin-top: var(--sk-space-4); font-size: var(--sk-text-xl); }
+  .panel__intro a { display: inline-block; margin-top: var(--sk-space-8); color: var(--sk-color-blue-300); font-weight: 600; text-decoration: none; }
+  ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sk-space-2); padding: var(--sk-space-5); margin: 0; list-style: none; }
+  li a { display: grid; gap: 0.15rem; height: 100%; padding: var(--sk-space-4); border-radius: var(--sk-radius-md); text-decoration: none; }
+  li a:hover { background: rgb(255 255 255 / 7%); }
+  li strong { font-family: var(--sk-font-heading); font-size: var(--sk-text-sm); font-weight: 600; }
+  li span { color: rgb(255 255 255 / 58%); font-size: var(--sk-text-xs); line-height: 1.4; }
+
+  @media (max-width: 62rem) {
+    .mega-menu { width: 100%; }
+    summary { justify-content: space-between; padding: var(--sk-space-3) 0; }
+    .panel { position: static; display: block; width: 100%; max-height: none; translate: none; border: 0; border-radius: 0; box-shadow: none; }
+    .panel__intro { display: none; }
+    ul { grid-template-columns: 1fr; padding: 0 0 var(--sk-space-4) var(--sk-space-3); }
+  }
+</style>

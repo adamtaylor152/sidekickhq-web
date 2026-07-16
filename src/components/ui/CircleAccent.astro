@@ -1,0 +1,21 @@
+---
+interface Props {
+  size?: "small" | "medium" | "large";
+  tone?: "blue" | "outline" | "paper";
+  class?: string;
+}
+
+const { size = "medium", tone = "blue", class: className } = Astro.props;
+---
+
+<span class:list={["circle", `circle--${size}`, `circle--${tone}`, className]} aria-hidden="true"></span>
+
+<style>
+  .circle { display: block; flex: 0 0 auto; border-radius: 50%; pointer-events: none; }
+  .circle--small { width: 0.65rem; height: 0.65rem; }
+  .circle--medium { width: 3rem; height: 3rem; }
+  .circle--large { width: clamp(8rem, 18vw, 18rem); height: clamp(8rem, 18vw, 18rem); }
+  .circle--blue { background: var(--sk-gradient-cape); }
+  .circle--outline { border: 1px solid rgb(81 162 250 / 45%); background: transparent; }
+  .circle--paper { background: var(--sk-color-paper); }
+</style>

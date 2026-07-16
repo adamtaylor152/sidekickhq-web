@@ -1,0 +1,20 @@
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<style>
+  .skip-link {
+    position: fixed;
+    z-index: 1000;
+    inset: var(--sk-space-3) auto auto var(--sk-space-3);
+    translate: 0 -180%;
+    padding: var(--sk-space-3) var(--sk-space-5);
+    border-radius: var(--sk-radius-pill);
+    background: var(--sk-color-white);
+    color: var(--sk-color-navy-950);
+    font-weight: 600;
+    transition: translate var(--sk-duration-fast) var(--sk-ease-standard);
+  }
+
+  .skip-link:focus {
+    translate: 0;
+  }
+</style>

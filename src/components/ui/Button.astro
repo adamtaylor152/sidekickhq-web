@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary" | "quiet" | "light";
+  size?: "small" | "medium" | "large";
+  arrow?: boolean;
+  class?: string;
+}
+
+const { href, variant = "primary", size = "medium", arrow = false, class: className } = Astro.props;
+---
+
+<a class:list={["button", `button--${variant}`, `button--${size}`, className]} href={href}>
+  <span><slot /></span>
+  {arrow && <Icon name="arrow" size={18} />}
+</a>
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sk-space-3);
+    border: 1px solid transparent;
+    border-radius: var(--sk-radius-pill);
+    font-size: var(--sk-text-sm);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: translate var(--sk-duration-fast) var(--sk-ease-standard), background var(--sk-duration-fast) var(--sk-ease-standard), border-color var(--sk-duration-fast) var(--sk-ease-standard);
+  }
+
+  .button:hover {
+    translate: 0 -2px;
+  }
+
+  .button--small { min-height: 2.45rem; padding: 0.7rem 1.05rem; }
+  .button--medium { min-height: 3rem; padding: 0.85rem 1.3rem; }
+  .button--large { min-height: 3.5rem; padding: 1rem 1.6rem; font-size: var(--sk-text-base); }
+  .button--primary { background: var(--sk-color-blue-500); color: var(--sk-color-white); }
+  .button--primary:hover { background: var(--sk-color-blue-600); }
+  .button--secondary { border-color: var(--sk-color-line); background: var(--sk-color-white); color: var(--sk-color-navy-950); }
+  .button--secondary:hover { border-color: var(--sk-color-blue-400); }
+  .button--quiet { background: transparent; color: inherit; }
+  .button--quiet:hover { background: rgb(255 255 255 / 8%); }
+  .button--light { background: var(--sk-color-white); color: var(--sk-color-navy-950); }
+</style>

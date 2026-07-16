@@ -1,0 +1,80 @@
+---
+import { ACCOUNT_NAVIGATION, GLOBAL_NAVIGATION } from "@/content/navigation";
+import Button from "@/components/ui/Button.astro";
+import Icon from "@/components/ui/Icon.astro";
+import MegaMenu from "./MegaMenu.astro";
+---
+
+<header class="site-header">
+  <div class="sk-container header-inner">
+    <a class="logo" href="/" aria-label="Sidekick home">
+      <img src="/brand/sidekick-lockup-color-dark.svg" width="194" height="50" alt="Sidekick" />
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {GLOBAL_NAVIGATION.map((item) => item.children ? <MegaMenu item={item} /> : <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <div class="header-actions">
+      <button class="country" type="button" data-country-selector aria-label="Choose country and currency">
+        <span aria-hidden="true">🇨🇦</span>
+        <span>Canada</span>
+        <Icon name="chevron" size={14} />
+      </button>
+      <a class="cart" href="/cart" data-cart-button aria-label="Shopping cart, 0 items">
+        <Icon name="cart" size={20} />
+        <span data-cart-count>0</span>
+      </a>
+      <a class="login" href={ACCOUNT_NAVIGATION[0].href}>Login</a>
+      <Button href={ACCOUNT_NAVIGATION[1].href} size="small">Start Trial</Button>
+    </div>
+
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation"><Icon name="menu" size={24} /></summary>
+      <div class="mobile-panel">
+        <nav aria-label="Mobile navigation">
+          {GLOBAL_NAVIGATION.map((item) => item.children ? <MegaMenu item={item} /> : <a href={item.href}>{item.label}</a>)}
+        </nav>
+        <div class="mobile-actions">
+          <a href="/login">Login</a>
+          <Button href="/checkout" size="small">Start Trial</Button>
+        </div>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid var(--sk-color-line-dark); background: rgb(3 13 34 / 94%); color: var(--sk-color-white); backdrop-filter: blur(1.2rem); }
+  .header-inner { position: relative; display: flex; align-items: center; min-height: var(--sk-header-height); gap: clamp(1rem, 2.4vw, 2.5rem); }
+  .logo { flex: 0 0 auto; }
+  .logo img { width: 9.8rem; height: auto; }
+  .desktop-nav { display: flex; align-items: center; gap: var(--sk-space-2); font-size: var(--sk-text-sm); }
+  .desktop-nav > a { padding: var(--sk-space-2); text-decoration: none; }
+  .desktop-nav > a:hover { color: var(--sk-color-blue-300); }
+  .header-actions { display: flex; align-items: center; gap: var(--sk-space-3); margin-left: auto; }
+  .country { display: flex; align-items: center; gap: var(--sk-space-2); padding: var(--sk-space-2); border: 0; background: transparent; color: inherit; cursor: pointer; font-size: var(--sk-text-xs); }
+  .cart { position: relative; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; text-decoration: none; }
+  .cart:hover { background: rgb(255 255 255 / 8%); }
+  .cart span { position: absolute; top: -0.15rem; right: -0.1rem; display: grid; min-width: 1.05rem; height: 1.05rem; place-items: center; border-radius: var(--sk-radius-pill); background: var(--sk-color-blue-400); color: var(--sk-color-navy-950); font-size: 0.6rem; font-weight: 600; }
+  .login { padding: var(--sk-space-2); font-size: var(--sk-text-sm); text-decoration: none; }
+  .mobile-nav { display: none; margin-left: auto; }
+  .mobile-nav > summary { display: grid; width: 2.8rem; height: 2.8rem; place-items: center; border-radius: 50%; cursor: pointer; list-style: none; }
+  .mobile-nav > summary::-webkit-details-marker { display: none; }
+  .mobile-panel { position: absolute; top: 100%; right: calc(-1 * var(--sk-gutter)); left: calc(-1 * var(--sk-gutter)); padding: var(--sk-space-5) var(--sk-gutter) var(--sk-space-8); border-top: 1px solid var(--sk-color-line-dark); background: var(--sk-color-navy-950); }
+  .mobile-panel nav { display: grid; }
+  .mobile-panel nav > a { padding: var(--sk-space-3) 0; text-decoration: none; }
+  .mobile-actions { display: flex; align-items: center; justify-content: space-between; padding-top: var(--sk-space-5); border-top: 1px solid var(--sk-color-line-dark); }
+
+  @media (max-width: 70rem) {
+    .desktop-nav { display: none; }
+    .header-actions .login { display: none; }
+    .mobile-nav { display: block; }
+  }
+
+  @media (max-width: 38rem) {
+    .logo img { width: 8.6rem; }
+    .country span:nth-child(2), .country :global(svg), .header-actions > :global(.button) { display: none; }
+    .header-actions { gap: var(--sk-space-1); }
+  }
+</style>

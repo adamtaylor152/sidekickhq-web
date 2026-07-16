@@ -1,0 +1,33 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+---
+
+<a class="link-arrow" href={href}>
+  <span><slot /></span>
+  <Icon name="arrow" size={18} />
+</a>
+
+<style>
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sk-space-2);
+    color: var(--sk-color-blue-600);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .link-arrow :global(svg) {
+    transition: translate var(--sk-duration-fast) var(--sk-ease-standard);
+  }
+
+  .link-arrow:hover :global(svg) {
+    translate: var(--sk-space-1) 0;
+  }
+</style>
