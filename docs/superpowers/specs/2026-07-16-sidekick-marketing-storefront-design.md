@@ -1,7 +1,7 @@
 # Sidekick Marketing, Storefront, and Activation Program Design
 
 **Date:** 2026-07-16
-**Status:** Approved in conversation; written-spec review pending
+**Status:** Approved
 **Company:** Sidekick HQ Inc.
 **Target domain:** `sidekickhq.ca`
 **Production repository:** `/Users/adamtaylor/Github/sidekickhq-web`
@@ -11,7 +11,7 @@
 
 Sidekick is the customer-facing rebrand of HeroNet. The public experience must never present HeroNet as a separate product or use dual branding. The marketing site, storefront, signup, checkout, transactional communication, account UI, and legal surfaces all use Sidekick. The name HeroNet remains only where internal engineering documentation must identify the current source repository or code symbols.
 
-The program delivers a sales-focused website and self-serve storefront for a broad suite of connected business applications. It combines a platform homepage, genuine product mini-sites, three-tier edition families, 38 industry pages, a structured Help Center landing page, localized CAD/USD pricing, a persistent cart, product-aware ordering wizards, account creation, payment, and asynchronous provisioning.
+The program delivers a sales-focused website and self-serve storefront for a broad suite of connected business applications. It combines a platform homepage, genuine product mini-sites, three-tier edition families, 40 industry pages, a structured Help Center landing page, localized CAD/USD pricing, a persistent cart, product-aware ordering wizards, account creation, payment, and asynchronous provisioning.
 
 The program also owns missing HeroNet application work. It is not limited to a static marketing frontend. It creates the Sidekick seller tenant, completes commercial catalogue entries, adds the public catalogue projection, implements the CRM tier model, builds signup and checkout orchestration, and delivers telecommunications-style Sidekick Voice ordering and activation.
 
@@ -32,8 +32,11 @@ The implementation is one approved program delivered through dependency-ordered 
 | Primary CTA | Start Trial |
 | Software trial | 30 days, no credit card, only for catalogue offers explicitly marked eligible |
 | No-trial products | Sidekick Voice, Sidekick Payments, and Sidekick Protect |
-| Pricing | Exact public pricing from published catalogue offers |
-| Cadence | Monthly/annual toggle using independently published prices |
+| Pricing | Approved Sidekick price book published through versioned catalogue offers |
+| CAD rule | Software CAD list prices are 140% of USD list prices, rounded to the nearest whole dollar |
+| Annual incentive | Two months free: annual total equals 10 monthly payments, a 16.67% discount |
+| Hardware | Country-specific verified retail MSRP, with no Sidekick hardware markup |
+| Cadence | Monthly/annual toggle using independently published prices; usage and hardware are excluded from annual discounting |
 | Tax display | Prices before tax; calculate applicable tax from confirmed billing or shipping address |
 | Country UX | Edge detection, flag and country in top bar, persistent manual override |
 | Cart UX | Header cart icon and item count; product-aware configured intents |
@@ -494,6 +497,96 @@ The route model must be ready for future article content without publishing plac
 - Never expose draft offers, provider costs, margins, or internal configuration.
 - Never invent or cache indefinitely when the source is unavailable.
 
+#### 10.2.1 Price-book rules
+
+The following launch price book is approved and must be created in the Sidekick seller tenant rather than hard-coded into the marketing frontend.
+
+- USD is the base software currency.
+- Monthly CAD list price is `round(USD monthly list price × 1.40)`.
+- Annual USD total is ten times the monthly USD list price: two months free, equivalent to a 16.67% discount.
+- Annual CAD total is `round(USD annual total × 1.40)`.
+- All displayed software prices are whole dollars with no cents.
+- Annual cards show the whole-dollar effective monthly amount and the exact annual amount billed in advance.
+- The small variation caused by whole-dollar CAD rounding is accepted and must not be disguised as a different promotional percentage.
+- Annual discounts apply only to recurring software, seats, locations, workloads, and recurring add-ons.
+- Metered usage, payment-processing fees, shipping, taxes, one-time services, and physical goods do not receive the annual discount.
+- Hardware uses verified country-specific retail MSRP. Hardware is not derived using the software CAD conversion rule.
+- Any future discount is a separate dated promotion or contract adjustment; it does not mutate list price.
+
+#### 10.2.2 Edition price book
+
+| Product and edition | Billing unit | USD monthly | USD annual | CAD monthly | CAD annual |
+| --- | --- | ---: | ---: | ---: | ---: |
+| CRM Essentials | user | $24 | $240 | $34 | $336 |
+| CRM Professional | user | $60 | $600 | $84 | $840 |
+| CRM Enterprise | user | $120 | $1,200 | $168 | $1,680 |
+| MSP Essentials | technician; unlimited managed endpoints subject to edition limits | $90 | $900 | $126 | $1,260 |
+| MSP Professional | technician; unlimited managed endpoints subject to edition limits | $150 | $1,500 | $210 | $2,100 |
+| MSP Enterprise | technician; unlimited managed endpoints | $210 | $2,100 | $294 | $2,940 |
+| Rentals Essentials | organization | $48 | $480 | $67 | $672 |
+| Rentals Professional | organization | $96 | $960 | $134 | $1,344 |
+| Rentals Enterprise | organization | $180 | $1,800 | $252 | $2,520 |
+
+The public edition comparison states included users, limits, and any additional-user charge from the published offer. It may not imply unlimited staff access unless the edition entitlement actually supplies it.
+
+#### 10.2.3 Standalone product and add-on price book
+
+| Product or offer | Billing unit | USD monthly | USD annual | CAD monthly | CAD annual |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ERP Full User | full operational user | $60 | $600 | $84 | $840 |
+| ERP Team User | light approval, time, expense, and self-service user | $18 | $180 | $25 | $252 |
+| Voice Business Communications | user/seat; one local number included | $30 | $300 | $42 | $420 |
+| Voice Contact Center | contact-center agent add-on | $90 | $900 | $126 | $1,260 |
+| Voice AI Receptionist | receptionist instance | $36 | $360 | $50 | $504 |
+| Voice Additional Local Number | number | $6 | $60 | $8 | $84 |
+| Protect Workstation | protected workstation | $12 | $120 | $17 | $168 |
+| Protect Server | protected physical or virtual server | $36 | $360 | $50 | $504 |
+| Protect Cloud User | protected Microsoft 365 or Google Workspace user | $6 | $60 | $8 | $84 |
+| Commerce Essentials | organization | $48 | $480 | $67 | $672 |
+| Commerce Professional | organization | $96 | $960 | $134 | $1,344 |
+| Commerce Enterprise | organization | $180 | $1,800 | $252 | $2,520 |
+| Appointments Essentials | location | $24 | $240 | $34 | $336 |
+| Appointments Professional | location | $48 | $480 | $67 | $672 |
+| Appointments Enterprise | location | $90 | $900 | $126 | $1,260 |
+| Sites Essentials | published site | $24 | $240 | $34 | $336 |
+| Sites Professional | published site | $48 | $480 | $67 | $672 |
+| Sites Enterprise | published site | $90 | $900 | $126 | $1,260 |
+| Sidekick AI Agent | active configured agent; includes 5,000 credits/month | $60 | $600 | $84 | $840 |
+
+Sidekick Desktop is included with every paid user entitlement and is not sold separately. Embedded Sidekick AI remains included according to edition capability limits. Voice AI usage is part of the Voice catalogue and is never debited from general Sidekick AI Agent credits.
+
+#### 10.2.4 Metered offers
+
+Sidekick Payments has no platform subscription fee, setup fee, or annual plan at launch. Revenue is earned from processing and separately purchased hardware. Merchant eligibility and approval still apply.
+
+| Offer | United States | Canada | Annual discount |
+| --- | ---: | ---: | --- |
+| Payments online domestic card | 2.9% + $0.30 | 2.9% + CA$0.30 | None |
+| Payments in-person domestic card | 2.7% + $0.05 | 2.7% + CA$0.05 | None |
+| Payments Interac debit | Not applicable | CA$0.15 | None |
+| Protect cloud-storage overage | $0.10/GB/month | CA$0.14/GB/month | None |
+| Sidekick AI Agent credit pack | $50 per 10,000 credits | CA$70 per 10,000 credits | None |
+
+International-card, currency-conversion, manually entered card, dispute, optional encryption, cellular-data, and other exceptional payment fees are published from country-specific catalogue components. Their public labels describe the customer charge without naming the underlying provider. Large-volume custom payment pricing is sales-assisted and must never be represented as guaranteed self-serve pricing.
+
+An AI credit has a versioned consumption schedule. A standard agent action consumes 20 credits at launch. The storefront therefore explains both pack size and example action cost; it never presents credits as an unlimited agent subscription.
+
+#### 10.2.5 Market position
+
+The price book intentionally uses a value-led middle position:
+
+- CRM Essentials is close to mainstream small-business entry plans while Professional and Enterprise remain materially below Salesforce and HubSpot list prices.
+- MSP pricing is comparable to Atera, Syncro, and SuperOps while preserving per-technician buying and meaningful capability progression.
+- Rentals spans Booqable’s growth range and reserves the highest price for multi-location, dispatch, telemetry, governance, and enterprise depth.
+- ERP Full User sits near configurable ERP plans while recognizing the value of connected CRM, commerce, appointments, rentals, and finance data.
+- Commerce follows the familiar small, growing, and advanced-store pattern without copying a competitor’s packaging.
+- Appointments begins below the common per-location growth plan and scales with multi-location operations.
+- Voice is priced in the established business-communications range while differentiating through optional Yealink and Poly hardware, activation help, number selection, and porting.
+- Protect uses simple workload pricing rather than an opaque bundle.
+- Sidekick AI Agents combine an affordable recurring agent with transparent metered actions instead of charging per resolved conversation.
+
+The research snapshot for these decisions is dated 2026-07-16 and uses official Salesforce, HubSpot, Pipedrive, RingCentral, Zoom, Dialpad, Atera, Syncro, SuperOps, Booqable, Rentman, Odoo, Shopify, Square Appointments, Webflow, Backblaze, Intercom, and underlying processing/device pricing pages. Competitor prices are research inputs only and are not shown as permanent claims on the public site without a fresh source check.
+
 ### 10.3 Cart model
 
 The cart stores configured product intents:
@@ -883,13 +976,26 @@ Internal source of truth:
 
 External research references:
 
-- Salesforce Sales Cloud and edition patterns
-- HubSpot customer platform, sales, AI, and Help Center patterns
+- Salesforce Sales Cloud editions: `https://www.salesforce.com/sales/pricing/`
+- Salesforce Agentforce usage pricing: `https://www.salesforce.com/agentforce/pricing/`
+- HubSpot Sales Hub pricing: `https://www.hubspot.com/pricing/sales`
 - Zoho CRM and Zoho One platform patterns
-- Pipedrive CRM packaging
+- Pipedrive CRM packaging: `https://www.pipedrive.com/en/pricing/professional-crm`
 - Acumatica ERP and edition patterns
-- Odoo app and documentation hierarchy
-- RingCentral device catalogue and telecommunications ordering patterns
-- Official terminal device, regional availability, hardware-order, and pricing pages
+- Odoo app hierarchy and pricing: `https://www.odoo.com/pricing`
+- Atera MSP pricing: `https://www.atera.com/msp-pricing/`
+- Syncro MSP pricing: `https://syncromsp.com/pricing-packages/`
+- SuperOps MSP pricing: `https://superops.com/pricing`
+- Booqable rental pricing: `https://booqable.com/pricing/`
+- Rentman rental pricing: `https://rentman.io/pricing`
+- Shopify commerce pricing: `https://www.shopify.com/pricing`
+- Square Appointments pricing: `https://squareup.com/us/en/appointments/pricing`
+- Webflow site-plan pricing: `https://webflow.com/pricing`
+- Backblaze business backup pricing: `https://www.backblaze.com/cloud-backup/business`
+- Intercom AI Agent outcome pricing: `https://www.intercom.com/help/en/articles/8205718-fin-ai-agent-outcomes`
+- RingCentral communications pricing and device catalogue: `https://www.ringcentral.com/us/en/office/plansandpricing.html` and `https://www.ringcentral.com/products/devices.html`
+- Zoom Phone pricing: `https://www.zoom.com/en/products/voip-phone/`
+- Dialpad communications pricing: `https://www.dialpad.com/pricing/`
+- Official regional processing, terminal-device, hardware-order, and pricing pages: `https://stripe.com/pricing`, `https://stripe.com/en-ca/pricing`, `https://stripe.com/terminal`, and `https://stripe.com/en-ca/terminal`
 
 External references inform page structure, selection breadth, and retail-price verification. They do not authorize copying protected marketing copy, imagery, or trademarks beyond factual manufacturer/model use.
