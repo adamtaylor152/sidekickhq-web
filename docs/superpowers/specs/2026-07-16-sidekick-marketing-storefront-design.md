@@ -793,7 +793,7 @@ Rules:
 
 ### 16.1 Marketing/storefront repository
 
-- Astro 5
+- Astro 7
 - Strict TypeScript
 - Tailwind 4 backed by semantic CSS variables
 - Server-rendered or prerendered pages by default

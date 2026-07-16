@@ -6,7 +6,7 @@
 
 **Architecture:** Astro renders accessible HTML by default from typed product, edition, industry, resource, and legal registries. Small React islands own only country selection, live catalogue pricing, cart state, and checkout state. Production pricing is fetched from HeroNet's public Sidekick catalogue projection; a clearly isolated development fixture supports local review and is forbidden in production.
 
-**Tech Stack:** Astro 5, strict TypeScript, Tailwind CSS 4, React 19 islands, Zod, Vitest, Testing Library, Playwright, axe-core, Docker, Node 22.
+**Tech Stack:** Astro 7, strict TypeScript, Tailwind CSS 4, React 19 islands, Zod, Vitest, Testing Library, Playwright, axe-core, Docker, Node 22.12 or newer.
 
 ## Global Constraints
 
@@ -64,7 +64,7 @@ Expected: FAIL because the package and test runner are not configured.
 
 - [ ] **Step 3: Add the exact toolchain**
 
-Create `package.json` with Node `>=22`, Astro `^5`, React `^19`, Tailwind `^4`, Zod `^3`, Vitest, Testing Library, Playwright, axe-core, ESLint, Prettier, and TypeScript. Configure strict TypeScript and the Node adapter in `astro.config.mjs`; configure jsdom in Vitest and Chromium/Desktop Safari/mobile Chromium projects in Playwright.
+Create `package.json` with Node `>=22.12`, Astro `^7`, React `^19`, Tailwind `^4`, Zod `^3`, Vitest, Testing Library, Playwright, axe-core, ESLint, Prettier, and TypeScript. Configure strict TypeScript and the Node adapter in `astro.config.mjs`; configure jsdom in Vitest and Chromium/Desktop Safari/mobile Chromium projects in Playwright.
 
 - [ ] **Step 4: Install and verify the scaffold**
 
