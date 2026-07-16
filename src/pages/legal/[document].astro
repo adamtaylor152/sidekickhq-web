@@ -1,0 +1,12 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { LEGAL_DOCUMENTS } from "@/content/legal-documents";
+export const prerender = true;
+export const getStaticPaths=()=>Object.entries(LEGAL_DOCUMENTS).map(([document,content])=>({params:{document},props:{content}}));
+const { content }=Astro.props;
+---
+<SiteLayout title={`${content.title} | Sidekick`} description={content.intro} canonicalPath={`/legal/${Astro.params.document}`}>
+  <section class="legal-hero sk-section"><div class="sk-container sk-container--copy"><p class="sk-eyebrow">Sidekick HQ Inc.</p><h1 class="sk-display">{content.title}</h1><p class="sk-body">{content.intro}</p><small>Last updated July 16, 2026</small></div></section>
+  <article class="legal-copy sk-section"><div class="sk-container sk-container--copy"><p class="notice">This launch copy provides a clear public summary and should receive final legal review before commercial publication.</p>{content.sections.map(([title,body])=><section><h2>{title}</h2><p>{body}</p></section>)}<section><h2>Contact</h2><p>Questions may be directed to Sidekick HQ Inc. through the <a href="/contact">contact page</a>.</p></section></div></article>
+</SiteLayout>
+<style>.legal-hero{background:var(--sk-color-navy-950);color:white}.legal-hero .sk-container{display:grid;gap:var(--sk-space-5)}.legal-hero .sk-body,.legal-hero small{color:rgb(255 255 255 / 65%)}.legal-copy .sk-container{display:grid;gap:var(--sk-space-9)}.legal-copy section{display:grid;gap:var(--sk-space-3)}.legal-copy h2{font-size:var(--sk-text-2xl)}.legal-copy p{color:var(--sk-color-ink-muted);font-size:var(--sk-text-lg)}.notice{padding:var(--sk-space-5);border-left:.25rem solid var(--sk-color-blue-500);background:var(--sk-color-paper);font-size:var(--sk-text-sm)!important}</style>

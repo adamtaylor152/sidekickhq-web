@@ -1,0 +1,40 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { PRODUCTS } from "@/content/products";
+---
+
+<SiteLayout title="Sidekick products | One platform, purpose-built apps" description="Explore Sidekick CRM, Voice, Payments, MSP, Rentals, ERP, Protect, Commerce, Appointments, Sites, Desktop, and AI." canonicalPath="/products">
+  <section class="catalog-hero sk-section">
+    <div class="sk-container">
+      <p class="sk-eyebrow">The Sidekick platform</p>
+      <h1 class="sk-display">Choose the apps your business needs. Keep one shared operating record.</h1>
+      <p class="sk-body">Each Sidekick product is deep enough to stand on its own and more useful when it works with the rest.</p>
+    </div>
+  </section>
+  <section class="sk-section">
+    <div class="sk-container product-grid">
+      {PRODUCTS.map((product) => (
+        <a class="product-card" href={`/products/${product.slug}`}>
+          <span class="sk-eyebrow">{product.category}</span>
+          <h2>{product.name}</h2>
+          <p>{product.tagline}</p>
+          <span>Explore {product.name.replace("Sidekick ", "")} <b aria-hidden="true">→</b></span>
+        </a>
+      ))}
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .catalog-hero { background: var(--sk-color-navy-950); color: white; }
+  .catalog-hero .sk-container { display: grid; gap: var(--sk-space-6); max-width: 70rem; }
+  .catalog-hero .sk-body { max-width: 50rem; color: rgb(255 255 255 / 68%); }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sk-space-5); }
+  .product-card { display: grid; min-height: 19rem; align-content: end; gap: var(--sk-space-4); padding: var(--sk-space-8); border: 1px solid var(--sk-color-line); border-radius: var(--sk-radius-card); background: var(--sk-color-paper); text-decoration: none; transition: transform .2s ease, border-color .2s ease; }
+  .product-card:hover { transform: translateY(-.25rem); border-color: var(--sk-color-blue-400); }
+  .product-card h2 { font-size: var(--sk-text-2xl); }
+  .product-card p { color: var(--sk-color-ink-muted); }
+  .product-card > span:last-child { color: var(--sk-color-blue-600); font-weight: 600; }
+  @media (max-width: 64rem) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 42rem) { .product-grid { grid-template-columns: 1fr; } }
+</style>

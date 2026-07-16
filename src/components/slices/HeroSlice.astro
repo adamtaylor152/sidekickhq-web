@@ -38,7 +38,7 @@ const outcomes = product?.outcomes ?? industry?.pains ?? ["One customer record",
 <style>
   .hero { position: relative; min-height: min(52rem, calc(100svh - 3rem)); padding-block: clamp(6rem, 11vw, 10rem); overflow: clip; background: var(--sk-gradient-night); color: var(--sk-color-white); }
   .hero--blue { background: var(--sk-gradient-cape); }
-  .hero__orbit { position: absolute; top: -8rem; right: -4rem; opacity: 0.65; scale: 1.8; }
+  .hero :global(.hero__orbit) { position: absolute; top: -8rem; right: -4rem; opacity: 0.65; scale: 1.8; }
   .hero__grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr); align-items: end; gap: clamp(3rem, 9vw, 9rem); }
   .hero__copy { max-width: 64rem; }
   .hero__copy > .sk-eyebrow { margin-bottom: var(--sk-space-8); color: var(--sk-color-blue-300); }

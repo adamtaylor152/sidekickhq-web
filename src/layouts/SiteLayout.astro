@@ -3,6 +3,7 @@ import AnnouncementBar from "@/components/site/AnnouncementBar.astro";
 import Footer from "@/components/site/Footer.astro";
 import Header from "@/components/site/Header.astro";
 import SkipLink from "@/components/ui/SkipLink.astro";
+import { PRICE_OFFERS } from "@/content/pricing";
 import "@/styles/global.css";
 
 interface Props {
@@ -38,5 +39,30 @@ const structuredDataJson = structuredData
     <Header />
     <main id="main-content"><slot /></main>
     <Footer />
+    <script is:inline define:vars={{ priceOffers: PRICE_OFFERS }}>
+      const detectCountry = () => {
+        const saved = localStorage.getItem("sidekick-country");
+        if (saved === "CA" || saved === "US") return saved;
+        const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const canadianZones = ["America/Edmonton","America/Vancouver","America/Toronto","America/Winnipeg","America/Halifax","America/St_Johns","America/Regina","America/Yellowknife","America/Whitehorse","America/Iqaluit","America/Moncton"];
+        return canadianZones.includes(zone) || navigator.language?.toLowerCase().includes("ca") ? "CA" : "US";
+      };
+      const country = detectCountry();
+      localStorage.setItem("sidekick-country", country);
+      const currency = country === "CA" ? "CAD" : "USD";
+      const format = (value) => new Intl.NumberFormat(country === "CA" ? "en-CA" : "en-US", { style:"currency", currency, maximumFractionDigits:0 }).format(value);
+      const monthly = (usd) => country === "CA" ? Math.round(usd * 1.4) : usd;
+      const annual = (usd) => country === "CA" ? Math.round(usd * 10 * 1.4) : usd * 10;
+      const render = () => {
+        document.querySelectorAll("[data-country-selector]").forEach((node) => { const spans=node.querySelectorAll("span"); if(spans[0]) spans[0].textContent=country==="CA"?"🇨🇦":"🇺🇸"; if(spans[1]) spans[1].textContent=country==="CA"?"Canada":"United States"; });
+        document.querySelectorAll("[data-price-for]").forEach((node) => { const offer=priceOffers.find(({key})=>key===node.dataset.priceFor); if(!offer)return; const cadence=document.documentElement.dataset.billingCadence||"monthly"; node.innerHTML=`<span>${format(cadence==="annual"?annual(offer.usdMonthly):monthly(offer.usdMonthly))}</span><small>${cadence==="annual"?"billed annually":"per "+offer.unit}</small>`; });
+        document.querySelectorAll("[data-hardware-usd]").forEach((node) => { const value=country==="CA"?Number(node.dataset.hardwareCad):Number(node.dataset.hardwareUsd); node.textContent=Number.isFinite(value)?`${format(value)} MSRP`:"Contact us for local MSRP"; });
+        const cart=JSON.parse(localStorage.getItem("sidekick-cart")||"[]"); document.querySelectorAll("[data-cart-count]").forEach((node)=>node.textContent=String(cart.reduce((sum,item)=>sum+(item.quantity||1),0)));
+      };
+      document.querySelectorAll("[data-country-selector]").forEach((button)=>button.addEventListener("click",()=>{localStorage.setItem("sidekick-country",country==="CA"?"US":"CA");location.reload()}));
+      document.querySelectorAll("[data-cadence]").forEach((button)=>button.addEventListener("click",()=>{document.documentElement.dataset.billingCadence=button.dataset.cadence;document.querySelectorAll("[data-cadence]").forEach((b)=>b.setAttribute("aria-pressed",String(b===button)));render()}));
+      document.querySelectorAll("[data-add-offer]").forEach((button)=>button.addEventListener("click",()=>{const cart=JSON.parse(localStorage.getItem("sidekick-cart")||"[]");const key=button.dataset.addOffer;const found=cart.find((item)=>item.key===key);if(found){found.quantity++}else{cart.push({key,quantity:1})}localStorage.setItem("sidekick-cart",JSON.stringify(cart));render();location.href="/cart";}));
+      render();
+    </script>
   </body>
 </html>

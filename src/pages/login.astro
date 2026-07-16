@@ -1,0 +1,7 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+---
+<SiteLayout title="Login | Sidekick" description="Log in to your Sidekick workspace." canonicalPath="/login">
+  <section class="login-page sk-section"><div class="login-card"><img src="/brand/sidekick-lockup-color-dark.svg" alt="Sidekick" /><h1>Welcome back.</h1><p>Enter your work email to continue to your Sidekick workspace.</p><form><label>Work email<input type="email" autocomplete="email" required /></label><button type="submit">Continue</button></form><a href="/checkout">New to Sidekick? Start a 30-day trial</a></div></section>
+</SiteLayout>
+<style>.login-page{display:grid;min-height:70vh;place-items:center;background:var(--sk-color-navy-950)}.login-card{display:grid;width:min(calc(100% - 2rem),30rem);gap:var(--sk-space-5);padding:var(--sk-space-8);border:1px solid var(--sk-color-line-dark);border-radius:var(--sk-radius-card);background:white}.login-card img{width:11rem;filter:invert(1)}.login-card h1{font-size:var(--sk-text-3xl)}.login-card p{color:var(--sk-color-ink-muted)}form,label{display:grid;gap:var(--sk-space-3)}input{padding:.9rem;border:1px solid var(--sk-color-line);border-radius:.6rem;font:inherit}button{padding:.9rem;border:0;border-radius:999px;background:var(--sk-color-blue-500);color:white;font-weight:600}.login-card>a{color:var(--sk-color-blue-600);font-size:var(--sk-text-sm)}</style>

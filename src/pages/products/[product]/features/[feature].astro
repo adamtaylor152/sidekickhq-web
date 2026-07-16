@@ -1,0 +1,32 @@
+---
+import ProductLayout from "@/layouts/ProductLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import { PRODUCTS } from "@/content/products";
+export const prerender = true;
+
+export const getStaticPaths = () => PRODUCTS.flatMap((product) => product.featureGroups.map((featureGroup) => ({ params: { product: product.slug, feature: featureGroup.title.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replaceAll(/(^-|-$)/g, "") }, props: { product, featureGroup } })));
+const { product, featureGroup } = Astro.props;
+---
+
+<ProductLayout product={product} activePath={`/products/${product.slug}#features`}>
+  <section class="feature-hero sk-section">
+    <div class="sk-container sk-container--copy">
+      <p class="sk-eyebrow">{product.name} feature</p>
+      <h1 class="sk-display">{featureGroup.title}</h1>
+      <p class="sk-body">{featureGroup.description}</p>
+    </div>
+  </section>
+  <section class="sk-section">
+    <div class="sk-container feature-list">
+      {featureGroup.features.map((feature, index) => <article><span>0{index + 1}</span><h2>{feature}</h2><p>Designed to keep this work connected to the customer, team, and operating record around it.</p></article>)}
+    </div>
+  </section>
+  <section class="cta sk-section"><div class="sk-container"><h2>See how it works in {product.name}.</h2><Button href={product.cta.href}>{product.cta.label}</Button></div></section>
+</ProductLayout>
+<style>
+  .feature-hero { background: var(--sk-color-navy-950); color: white; } .feature-hero .sk-container { display:grid; gap:var(--sk-space-6); } .feature-hero .sk-body { color:rgb(255 255 255 / 68%); }
+  .feature-list { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--sk-color-line); border:1px solid var(--sk-color-line); }
+  article { display:grid; gap:var(--sk-space-5); min-height:19rem; align-content:end; padding:var(--sk-space-8); background:white; } article span { color:var(--sk-color-blue-600); } article h2 { font-size:var(--sk-text-2xl); } article p { color:var(--sk-color-ink-muted); }
+  .cta { background:var(--sk-color-paper); } .cta .sk-container { display:flex; justify-content:space-between; align-items:center; gap:2rem; }
+  @media(max-width:48rem){.feature-list{grid-template-columns:1fr}.cta .sk-container{align-items:flex-start;flex-direction:column}}
+</style>

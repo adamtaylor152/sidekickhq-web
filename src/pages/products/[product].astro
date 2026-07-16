@@ -1,0 +1,13 @@
+---
+import ProductLayout from "@/layouts/ProductLayout.astro";
+import SliceRenderer from "@/components/slices/SliceRenderer.astro";
+import { PRODUCTS } from "@/content/products";
+export const prerender = true;
+
+export const getStaticPaths = () => PRODUCTS.filter(({ slug }) => !["ai", "desktop"].includes(slug)).map((product) => ({ params: { product: product.slug }, props: { product } }));
+const { product } = Astro.props;
+---
+
+<ProductLayout product={product} activePath={`/products/${product.slug}`}>
+  {product.slices.map((slice) => <SliceRenderer slice={slice} product={product} />)}
+</ProductLayout>

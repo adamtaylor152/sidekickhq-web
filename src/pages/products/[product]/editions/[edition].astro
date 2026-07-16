@@ -1,0 +1,14 @@
+---
+import ProductLayout from "@/layouts/ProductLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import { EDITIONS } from "@/content/editions";
+import { getProduct } from "@/content/products";
+export const prerender = true;
+export const getStaticPaths = () => EDITIONS.map((edition) => ({ params:{product:edition.productSlug,edition:edition.slug}, props:{edition,product:getProduct(edition.productSlug)!} }));
+const { product, edition } = Astro.props;
+---
+<ProductLayout product={product} activePath={`/products/${product.slug}/editions/${edition.slug}`}>
+  <section class="edition-hero sk-section"><div class="sk-container"><div><p class="sk-eyebrow">{product.name}</p><h1 class="sk-display">{edition.name}</h1><p class="sk-body">{edition.summary}</p><Button href={`/checkout?offer=${edition.offerKey}`}>{edition.trialEligible ? "Start 30-day trial" : "Get started"}</Button></div><aside><p class="sk-eyebrow">Best for</p><h2>{edition.bestFor}</h2><div data-price-for={edition.offerKey}>See localized pricing</div></aside></div></section>
+  <section class="sk-section"><div class="sk-container details"><div><p class="sk-eyebrow">Included</p><ul>{edition.includes.map((item)=><li>{item}</li>)}</ul></div><div><p class="sk-eyebrow">Limits</p><ul>{edition.limits.map((item)=><li>{item}</li>)}</ul></div></div></section>
+</ProductLayout>
+<style>.edition-hero{background:var(--sk-color-navy-950);color:white}.edition-hero .sk-container{display:grid;grid-template-columns:1.35fr .65fr;gap:var(--sk-space-10);align-items:end}.edition-hero .sk-container>div{display:grid;gap:var(--sk-space-6)}.edition-hero .sk-body{color:rgb(255 255 255 / 68%)}aside{display:grid;gap:var(--sk-space-5);padding:var(--sk-space-8);border-radius:var(--sk-radius-card);background:var(--sk-color-blue-600)}.details{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sk-space-10)}.details>div{padding:var(--sk-space-8);border-top:1px solid var(--sk-color-line)}li{margin-block:var(--sk-space-3)}@media(max-width:48rem){.edition-hero .sk-container,.details{grid-template-columns:1fr}}</style>

@@ -7,12 +7,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [["html", { open: "never" }], ["list"]],
   use: {
-    baseURL: "http://127.0.0.1:4181",
+    baseURL: "http://127.0.0.1:4182",
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run dev -- --host 127.0.0.1 --port 4181",
-    url: "http://127.0.0.1:4181",
+    command: "npm run dev -- --host 127.0.0.1 --port 4182",
+    url: "http://127.0.0.1:4182",
     reuseExistingServer: !process.env.CI,
   },
   projects: [

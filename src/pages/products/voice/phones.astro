@@ -1,0 +1,13 @@
+---
+import ProductLayout from "@/layouts/ProductLayout.astro";
+import Button from "@/components/ui/Button.astro";
+import { getProduct } from "@/content/products";
+import { PHONE_HARDWARE } from "@/content/pricing";
+const product = getProduct("voice")!;
+const phones = PHONE_HARDWARE.map(([key,name,usd])=>({key,name,usd,cad:Math.round(usd*1.4),brand:name.startsWith("Poly")?"Poly":"Yealink",image:name.startsWith("Poly")?"/images/products/voice/poly-edge-e450.webp":"/images/products/voice/hero.webp"}));
+---
+<ProductLayout product={product} activePath="/products/voice/phones">
+  <section class="hardware-hero sk-section"><div class="sk-container"><p class="sk-eyebrow">Poly and Yealink</p><h1 class="sk-display">Business phones made for desks, counters, meeting rooms, and people on the move.</h1><p class="sk-body">Choose supported hardware during activation. We provision it for Sidekick Voice and ship it ready for assignment.</p></div></section>
+  <section class="sk-section"><div class="sk-container hardware-grid">{phones.map((phone)=><article><img src={phone.image} alt={`${phone.name} business phone showing the Sidekick calling experience`} /><p class="sk-eyebrow">{phone.brand}</p><h2>{phone.name}</h2><p>{phone.name.includes("Rove")||phone.name.includes("W7")||phone.name.includes("AX")?"Cordless mobility":"Desk and conference calling"}</p><div data-hardware-usd={phone.usd} data-hardware-cad={phone.cad}>Local MSRP</div><Button href={`/checkout?offer=voice.business&hardware=${phone.key}`}>Add during setup</Button></article>)}</div></section>
+</ProductLayout>
+<style>.hardware-hero{background:var(--sk-color-navy-950);color:white}.hardware-hero .sk-container{display:grid;gap:var(--sk-space-6);max-width:72rem}.hardware-hero .sk-body{max-width:52rem;color:rgb(255 255 255 / 68%)}.hardware-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--sk-space-6)}article{display:grid;gap:var(--sk-space-4);padding:var(--sk-space-7);border:1px solid var(--sk-color-line);border-radius:var(--sk-radius-card)}article img{width:100%;aspect-ratio:4/3;object-fit:contain;background:white}article h2{font-size:var(--sk-text-2xl)}article>p:not(.sk-eyebrow){color:var(--sk-color-ink-muted)}@media(max-width:48rem){.hardware-grid{grid-template-columns:1fr}}</style>
