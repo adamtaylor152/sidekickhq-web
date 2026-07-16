@@ -1,0 +1,54 @@
+---
+import AiOperatingLayer from "@/components/slices/AiOperatingLayer.astro";
+import ConversionBand from "@/components/slices/ConversionBand.astro";
+import HardwareStage from "@/components/slices/HardwareStage.astro";
+import HeroSlice from "@/components/slices/HeroSlice.astro";
+import IndustryPathways from "@/components/slices/IndustryPathways.astro";
+import ProductConstellation from "@/components/slices/ProductConstellation.astro";
+import SliceFrame from "@/components/slices/SliceFrame.astro";
+import { getProduct } from "@/content/products";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+const platformPromise = "Every part of your business, working together—with AI built in.";
+const voice = getProduct("voice");
+const payments = getProduct("payments");
+if (!voice || !payments) throw new Error("Homepage hardware products are missing");
+
+const hero = { kind: "hero", theme: "navy", id: "home-hero" } as const;
+const constellation = { kind: "constellation", theme: "paper", id: "products" } as const;
+const workflow = { kind: "workflow", theme: "white", id: "workflows" } as const;
+const ai = { kind: "ai-layer", theme: "blue", id: "sidekick-ai" } as const;
+const voiceHardware = { kind: "hardware-stage", theme: "white", id: "real-phones" } as const;
+const paymentHardware = { kind: "hardware-stage", theme: "paper", id: "real-terminals" } as const;
+const industries = { kind: "industry-pathways", theme: "white", id: "industries" } as const;
+const conversion = { kind: "conversion", theme: "navy", id: "start" } as const;
+---
+
+<SiteLayout title="Sidekick | Connected business software with AI built in" description={platformPromise} canonicalPath="/" theme="dark">
+  <HeroSlice slice={hero} />
+  <ProductConstellation slice={constellation} />
+
+  <SliceFrame slice={workflow} eyebrow="Connected by design" title="The handoffs happen inside Sidekick." body="Each product has its own depth. The customer, work, communication, money, and next action still meet on one operating record." wide>
+    <div class="handoffs">
+      <article><span>01</span><h3>Appointment-led service</h3><p>Booking → customer → reminder → service → terminal payment → finance</p></article>
+      <article><span>02</span><h3>Managed services</h3><p>Proposal → order → onboarding → PSA + RMM → recurring billing</p></article>
+      <article><span>03</span><h3>Rental and field work</h3><p>Quote → availability → staging → dispatch → return → fleet insight</p></article>
+      <article><span>04</span><h3>Retail and hospitality</h3><p>Order → customer + location → payment → inventory → settlement</p></article>
+    </div>
+  </SliceFrame>
+
+  <AiOperatingLayer slice={ai} />
+  <HardwareStage slice={voiceHardware} product={voice} />
+  <HardwareStage slice={paymentHardware} product={payments} />
+  <IndustryPathways slice={industries} />
+  <ConversionBand slice={conversion} />
+</SiteLayout>
+
+<style>
+  .handoffs { border-top: 1px solid var(--sk-color-line); }
+  article { display: grid; grid-template-columns: 3rem minmax(12rem, 0.55fr) minmax(20rem, 1.45fr); gap: var(--sk-space-6); align-items: center; min-height: 7.2rem; border-bottom: 1px solid var(--sk-color-line); }
+  article span { color: var(--sk-color-blue-500); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
+  article h3 { font-size: var(--sk-text-lg); }
+  article p { color: var(--sk-color-ink-muted); }
+  @media (max-width: 48rem) { article { grid-template-columns: 2rem 1fr; padding-block: var(--sk-space-5); } article p { grid-column: 2; } }
+</style>

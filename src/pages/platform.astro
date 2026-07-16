@@ -1,0 +1,23 @@
+---
+import AiOperatingLayer from "@/components/slices/AiOperatingLayer.astro";
+import ConversionBand from "@/components/slices/ConversionBand.astro";
+import EditorialSplit from "@/components/slices/EditorialSplit.astro";
+import HeroSlice from "@/components/slices/HeroSlice.astro";
+import ProductConstellation from "@/components/slices/ProductConstellation.astro";
+import WorkflowStory from "@/components/slices/WorkflowStory.astro";
+import { getProduct } from "@/content/products";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+const crm = getProduct("crm");
+const rentals = getProduct("rentals");
+if (!crm || !rentals) throw new Error("Platform narrative products are missing");
+---
+
+<SiteLayout title="The Sidekick platform | One connected business record" description="Understand how Sidekick products share customer, operational, financial, communications, and AI context without becoming one shallow application." canonicalPath="/platform" theme="dark">
+  <HeroSlice slice={{ kind: "hero", theme: "navy", id: "platform-hero" }} />
+  <EditorialSplit slice={{ kind: "editorial-split", theme: "paper", id: "one-record" }} product={crm} />
+  <WorkflowStory slice={{ kind: "workflow", theme: "white", id: "operational-depth" }} product={rentals} />
+  <ProductConstellation slice={{ kind: "constellation", theme: "paper", id: "platform-products" }} />
+  <AiOperatingLayer slice={{ kind: "ai-layer", theme: "navy", id: "platform-ai" }} />
+  <ConversionBand slice={{ kind: "conversion", theme: "white", id: "platform-start" }} />
+</SiteLayout>

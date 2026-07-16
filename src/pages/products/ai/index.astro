@@ -1,0 +1,12 @@
+---
+import SliceRenderer from "@/components/slices/SliceRenderer.astro";
+import { getProduct } from "@/content/products";
+import ProductLayout from "@/layouts/ProductLayout.astro";
+
+const product = getProduct("ai");
+if (!product) throw new Error("Sidekick AI content is missing");
+---
+
+<ProductLayout product={product}>
+  {product.slices.map((slice) => <SliceRenderer slice={slice} product={product} />)}
+</ProductLayout>
