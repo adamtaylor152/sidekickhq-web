@@ -1,0 +1,40 @@
+---
+import type { SliceDefinition } from "@/content/types";
+
+interface Props {
+  slice: SliceDefinition;
+  eyebrow?: string;
+  title?: string;
+  body?: string;
+  wide?: boolean;
+  headingId?: string;
+}
+
+const { slice, eyebrow, title, body, wide = false, headingId = `${slice.id}-title` } = Astro.props;
+---
+
+<section id={slice.id} class:list={["slice", `slice--${slice.theme}`]} aria-labelledby={title ? headingId : undefined}>
+  <div class:list={["sk-container", { "sk-container--wide": wide }]}>
+    {(eyebrow || title || body) && (
+      <header class="slice__header">
+        {eyebrow && <p class="sk-eyebrow">{eyebrow}</p>}
+        {title && <h2 id={headingId}>{title}</h2>}
+        {body && <p>{body}</p>}
+      </header>
+    )}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .slice { padding-block: var(--sk-section-space); overflow: clip; }
+  .slice--white { background: var(--sk-color-white); color: var(--sk-color-ink); }
+  .slice--paper { background: var(--sk-color-paper); color: var(--sk-color-ink); }
+  .slice--navy { background: var(--sk-gradient-night); color: var(--sk-color-white); }
+  .slice--blue { background: var(--sk-gradient-cape); color: var(--sk-color-white); }
+  .slice__header { display: grid; max-width: 48rem; gap: var(--sk-space-5); margin-bottom: clamp(2.5rem, 6vw, 5rem); }
+  .slice__header h2 { font-size: var(--sk-text-3xl); }
+  .slice__header p:not(.sk-eyebrow) { max-width: 44rem; color: var(--sk-color-ink-muted); font-size: var(--sk-text-lg); }
+  .slice--navy .slice__header p:not(.sk-eyebrow), .slice--blue .slice__header p:not(.sk-eyebrow) { color: rgb(255 255 255 / 68%); }
+  .slice--navy .sk-eyebrow, .slice--blue .sk-eyebrow { color: var(--sk-color-blue-300); }
+</style>

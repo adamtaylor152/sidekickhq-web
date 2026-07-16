@@ -1,0 +1,32 @@
+---
+import Button from "@/components/ui/Button.astro";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const title = product?.tagline ?? industry?.hero.title ?? "The operational detail and the bigger picture.";
+const body = product?.hero.body ?? industry?.hero.body ?? "Sidekick keeps detailed work connected to the decision that depends on it.";
+const points = product?.outcomes ?? industry?.aiActions ?? [];
+const cta = product?.cta ?? industry?.cta;
+---
+
+<SliceFrame slice={slice} wide>
+  <div class="split">
+    <div class="split__statement"><p class="sk-eyebrow">Designed around the work</p><h2>{title}</h2></div>
+    <div class="split__detail"><p>{body}</p><ul>{points.slice(0, 3).map((point) => <li>{point}</li>)}</ul>{cta && <Button href={cta.href} arrow>{cta.label}</Button>}</div>
+  </div>
+</SliceFrame>
+
+<style>
+  .split { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr); gap: clamp(3rem, 10vw, 10rem); align-items: start; }
+  .split__statement { position: relative; }
+  .split__statement::after { display: block; width: clamp(5rem, 11vw, 10rem); height: clamp(5rem, 11vw, 10rem); margin-top: var(--sk-space-12); border: 1px solid var(--sk-color-blue-400); border-radius: 50%; content: ""; }
+  h2 { max-width: 16ch; margin-top: var(--sk-space-6); font-size: var(--sk-text-3xl); }
+  .split__detail > p { color: var(--sk-color-ink-muted); font-size: var(--sk-text-lg); }
+  ul { display: grid; gap: var(--sk-space-5); padding: var(--sk-space-10) 0; margin: 0; list-style: none; counter-reset: points; }
+  li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--sk-space-3); counter-increment: points; }
+  li::before { color: var(--sk-color-blue-500); content: "0" counter(points); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
+  :global(.slice--navy) .split__detail > p { color: rgb(255 255 255 / 62%); }
+  @media (max-width: 48rem) { .split { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,53 @@
+---
+import Button from "@/components/ui/Button.astro";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const actions = industry?.aiActions ?? product?.workflows.map((workflow) => workflow.title) ?? ["Summarize the full record", "Recommend the next useful action", "Complete approved work with an AI Agent"];
+---
+
+<SliceFrame slice={slice} eyebrow="Sidekick AI" title="Intelligence inside the work, with the record and controls attached." body="Embedded AI helps within eligible products. Separately purchased AI Agents can perform governed actions with transparent credit usage." wide>
+  <div class="ai-grid">
+    <div class="ai-console">
+      <div class="ai-console__top"><span></span><span>Sidekick AI · grounded response</span><span>Reviewed</span></div>
+      <div class="ai-console__body">
+        <p class="question">What needs attention next?</p>
+        <p class="answer">I found three actions based on current customer, operational, and financial records.</p>
+        <ol>{actions.slice(0, 3).map((action, index) => <li><span>{index + 1}</span><strong>{action}</strong><small>{index === 0 ? "Ready for review" : "Source context attached"}</small></li>)}</ol>
+      </div>
+    </div>
+    <div class="ai-copy">
+      <p class="sk-eyebrow">Two clear layers</p>
+      <h3>Included intelligence. Optional digital workers.</h3>
+      <dl>
+        <div><dt>Embedded AI</dt><dd>Summaries, drafts, signals, and recommendations within edition limits.</dd></div>
+        <div><dt>AI Agents</dt><dd>Configured roles, approved tools, recurring agent pricing, and metered credits.</dd></div>
+      </dl>
+      <Button href="/products/ai" variant={slice.theme === "blue" || slice.theme === "navy" ? "light" : "primary"} arrow>Explore Sidekick AI</Button>
+    </div>
+  </div>
+</SliceFrame>
+
+<style>
+  .ai-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr); gap: clamp(3rem, 7vw, 7rem); align-items: center; }
+  .ai-console { overflow: hidden; border: 1px solid var(--sk-color-line-dark); border-radius: var(--sk-radius-stage); background: var(--sk-color-navy-950); box-shadow: var(--sk-shadow-stage); color: var(--sk-color-white); }
+  .ai-console__top { display: grid; grid-template-columns: 1rem 1fr auto; gap: var(--sk-space-3); align-items: center; padding: var(--sk-space-4) var(--sk-space-5); border-bottom: 1px solid var(--sk-color-line-dark); color: rgb(255 255 255 / 52%); font-size: var(--sk-text-xs); }
+  .ai-console__top span:first-child { width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--sk-color-success); box-shadow: 0 0 1rem var(--sk-color-success); }
+  .ai-console__body { padding: clamp(1.5rem, 4vw, 3rem); }
+  .question { color: var(--sk-color-blue-300); font-family: var(--sk-font-mono); font-size: var(--sk-text-sm); }
+  .answer { max-width: 34rem; margin-top: var(--sk-space-6); font-family: var(--sk-font-heading); font-size: var(--sk-text-2xl); line-height: var(--sk-leading-heading); }
+  ol { display: grid; gap: var(--sk-space-3); padding: var(--sk-space-8) 0 0; margin: 0; list-style: none; }
+  li { display: grid; grid-template-columns: 2rem 1fr auto; gap: var(--sk-space-3); align-items: center; padding: var(--sk-space-4); border: 1px solid var(--sk-color-line-dark); border-radius: var(--sk-radius-md); background: rgb(255 255 255 / 4%); }
+  li > span { display: grid; width: 1.6rem; height: 1.6rem; place-items: center; border-radius: 50%; background: rgb(81 162 250 / 16%); color: var(--sk-color-blue-300); font-size: var(--sk-text-xs); }
+  li strong { font-size: var(--sk-text-sm); font-weight: 600; }
+  li small { color: rgb(255 255 255 / 40%); }
+  .ai-copy .sk-eyebrow { color: inherit; opacity: 0.7; }
+  .ai-copy h3 { margin-top: var(--sk-space-5); font-size: var(--sk-text-3xl); }
+  dl { display: grid; gap: var(--sk-space-6); margin-block: var(--sk-space-8); }
+  dt { font-family: var(--sk-font-heading); font-weight: 600; }
+  dd { margin: var(--sk-space-2) 0 0; opacity: 0.68; }
+  @media (max-width: 56rem) { .ai-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 34rem) { li { grid-template-columns: 2rem 1fr; } li small { grid-column: 2; } }
+</style>

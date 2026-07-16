@@ -1,0 +1,36 @@
+---
+import type { SliceKind } from "@/content/types";
+import AiOperatingLayer from "./AiOperatingLayer.astro";
+import ConversionBand from "./ConversionBand.astro";
+import EditionComparison from "./EditionComparison.astro";
+import EditorialSplit from "./EditorialSplit.astro";
+import FaqList from "./FaqList.astro";
+import FeatureLedger from "./FeatureLedger.astro";
+import HardwareStage from "./HardwareStage.astro";
+import HeroSlice from "./HeroSlice.astro";
+import IndustryPathways from "./IndustryPathways.astro";
+import MediaStage from "./MediaStage.astro";
+import ProductConstellation from "./ProductConstellation.astro";
+import type { SliceProps } from "./slice-types";
+import WorkflowStory from "./WorkflowStory.astro";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const components = {
+  hero: HeroSlice,
+  constellation: ProductConstellation,
+  workflow: WorkflowStory,
+  "feature-ledger": FeatureLedger,
+  "editorial-split": EditorialSplit,
+  "media-stage": MediaStage,
+  "industry-pathways": IndustryPathways,
+  "ai-layer": AiOperatingLayer,
+  "hardware-stage": HardwareStage,
+  "edition-comparison": EditionComparison,
+  faq: FaqList,
+  conversion: ConversionBand,
+} satisfies Record<SliceKind, typeof HeroSlice>;
+const Component = components[slice.kind];
+---
+
+<Component slice={slice} product={product} industry={industry} />

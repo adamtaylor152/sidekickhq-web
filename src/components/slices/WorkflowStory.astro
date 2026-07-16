@@ -1,0 +1,31 @@
+---
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const workflows = product?.workflows ?? industry?.workflows ?? [];
+---
+
+<SliceFrame slice={slice} eyebrow="How the work moves" title={workflows[0]?.title ?? "One record follows the work"} body={workflows[0]?.description ?? "Sidekick keeps the customer, commitment, operational work, and outcome connected."}>
+  <div class="workflow-grid">
+    <ol>
+      {(workflows[0]?.steps ?? []).map((step, index) => <li><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></li>)}
+    </ol>
+    {workflows[1] && <aside><p class="sk-eyebrow">Then keep going</p><h3>{workflows[1].title}</h3><p>{workflows[1].description}</p><ul>{workflows[1].steps.map((step) => <li>{step}</li>)}</ul></aside>}
+  </div>
+</SliceFrame>
+
+<style>
+  .workflow-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(17rem, 0.6fr); gap: clamp(2.5rem, 8vw, 8rem); align-items: start; }
+  ol { display: grid; padding: 0; margin: 0; list-style: none; border-top: 1px solid currentColor; }
+  ol li { display: grid; grid-template-columns: 4rem 1fr; align-items: center; gap: var(--sk-space-5); min-height: 7rem; border-bottom: 1px solid currentColor; }
+  ol span { color: var(--sk-color-blue-500); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
+  ol strong { font-family: var(--sk-font-heading); font-size: var(--sk-text-xl); font-weight: 600; }
+  aside { padding: var(--sk-space-8); border-radius: var(--sk-radius-card); background: var(--sk-color-navy-950); color: var(--sk-color-white); box-shadow: var(--sk-shadow-soft); }
+  aside .sk-eyebrow { color: var(--sk-color-blue-300); }
+  aside h3 { margin-top: var(--sk-space-5); font-size: var(--sk-text-2xl); }
+  aside > p:not(.sk-eyebrow) { margin-top: var(--sk-space-5); color: rgb(255 255 255 / 62%); }
+  aside ul { display: grid; gap: var(--sk-space-3); padding: var(--sk-space-6) 0 0 var(--sk-space-5); color: rgb(255 255 255 / 78%); }
+  @media (max-width: 50rem) { .workflow-grid { grid-template-columns: 1fr; } }
+</style>

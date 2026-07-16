@@ -1,0 +1,44 @@
+---
+import Button from "@/components/ui/Button.astro";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product } = Astro.props;
+const isVoice = product?.slug === "voice";
+const title = isVoice ? "Choose the phone your team will actually use." : "Choose the terminal that fits the counter, floor, or field.";
+const body = isVoice ? "Sidekick sells supported Poly and Yealink desk, cordless, and conference phones at verified retail MSRP." : "Sidekick sells supported countertop, handheld, mobile, and self-service payment hardware at verified local retail MSRP.";
+const href = isVoice ? "/products/voice/phones" : "/products/payments/terminals";
+---
+
+<SliceFrame slice={slice} eyebrow={isVoice ? "Poly and Yealink hardware" : "Payment hardware"} title={title} body={body} wide>
+  <div class="hardware">
+    <figure>
+      <img src={product?.media.src ?? "/brand/sidekick-mark-color.svg"} alt={product?.media.alt ?? "Sidekick hardware"} width="1440" height="960" loading="lazy" />
+      <figcaption>{isVoice ? "Desk, cordless, conference, and expansion options" : "Countertop, handheld, mobile, and self-service options"}</figcaption>
+    </figure>
+    <aside>
+      <p class="sk-eyebrow">Buying hardware should be obvious</p>
+      <h3>{isVoice ? "Real phones, provisioned for Sidekick." : "Real terminals, ready for Sidekick."}</h3>
+      <ul>
+        <li>Country-compatible models only</li>
+        <li>Verified current retail MSRP</li>
+        <li>Clear accessories and connectivity</li>
+        <li>Tracked shipping and activation</li>
+      </ul>
+      <Button href={href} variant="light" arrow>Browse hardware</Button>
+    </aside>
+  </div>
+</SliceFrame>
+
+<style>
+  .hardware { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 0.5fr); overflow: hidden; border-radius: var(--sk-radius-stage); background: var(--sk-color-navy-950); box-shadow: var(--sk-shadow-stage); color: var(--sk-color-white); }
+  figure { position: relative; min-height: 36rem; margin: 0; overflow: hidden; background: var(--sk-color-white); }
+  figure img { width: 100%; height: 100%; object-fit: contain; }
+  figcaption { position: absolute; bottom: var(--sk-space-5); left: var(--sk-space-5); padding: var(--sk-space-3) var(--sk-space-4); border-radius: var(--sk-radius-pill); background: rgb(3 13 34 / 82%); color: var(--sk-color-white); font-size: var(--sk-text-xs); backdrop-filter: blur(0.8rem); }
+  aside { display: grid; align-content: center; padding: var(--sk-space-8); }
+  aside .sk-eyebrow { color: var(--sk-color-blue-300); }
+  h3 { margin-top: var(--sk-space-5); font-size: var(--sk-text-2xl); }
+  ul { display: grid; gap: var(--sk-space-3); padding: var(--sk-space-8) 0 var(--sk-space-8) var(--sk-space-5); color: rgb(255 255 255 / 68%); }
+  @media (max-width: 54rem) { .hardware { grid-template-columns: 1fr; } figure { min-height: 26rem; } }
+</style>

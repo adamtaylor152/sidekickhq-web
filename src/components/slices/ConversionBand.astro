@@ -1,0 +1,29 @@
+---
+import Button from "@/components/ui/Button.astro";
+import CircleAccent from "@/components/ui/CircleAccent.astro";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const cta = product?.cta ?? industry?.cta ?? { label: "Start a 30-day trial", href: "/checkout", trialEligible: true };
+---
+
+<SliceFrame slice={slice} wide>
+  <div class="conversion">
+    <CircleAccent size="large" tone="outline" class="conversion__circle" />
+    <div><p class="sk-eyebrow">Ready when you are</p><h2>{product ? `Put ${product.name} to work.` : industry ? `Build a Sidekick starting point for ${industry.name}.` : "Start with the part of the business that needs help first."}</h2></div>
+    <div><Button href={cta.href} size="large" variant="light" arrow>{cta.label}</Button>{cta.trialEligible && <p>30 days · no credit card required</p>}</div>
+  </div>
+</SliceFrame>
+
+<style>
+  .conversion { position: relative; display: grid; grid-template-columns: minmax(0, 1.4fr) auto; align-items: end; gap: var(--sk-space-10); padding: clamp(2rem, 6vw, 5rem); overflow: hidden; border-radius: var(--sk-radius-stage); background: var(--sk-color-navy-950); color: var(--sk-color-white); box-shadow: var(--sk-shadow-stage); }
+  .conversion > div { position: relative; z-index: 1; }
+  .sk-eyebrow { color: var(--sk-color-blue-300); }
+  h2 { max-width: 18ch; margin-top: var(--sk-space-5); font-size: var(--sk-text-3xl); }
+  .conversion > div:last-of-type { display: grid; gap: var(--sk-space-4); justify-items: start; }
+  .conversion > div:last-of-type p { color: rgb(255 255 255 / 48%); font-size: var(--sk-text-xs); }
+  .conversion__circle { position: absolute; right: -7rem; bottom: -10rem; opacity: 0.5; scale: 1.5; }
+  @media (max-width: 48rem) { .conversion { grid-template-columns: 1fr; align-items: start; } }
+</style>

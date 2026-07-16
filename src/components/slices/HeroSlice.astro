@@ -1,0 +1,55 @@
+---
+import Button from "@/components/ui/Button.astro";
+import CircleAccent from "@/components/ui/CircleAccent.astro";
+import type { SliceProps } from "./slice-types";
+
+type Props = SliceProps;
+const { slice, product, industry } = Astro.props;
+const hero = product?.hero ?? industry?.hero ?? {
+  eyebrow: "Sidekick",
+  title: "Every part of your business, working together—with AI built in.",
+  body: "Start with the product you need today and keep one connected operating record as the business grows.",
+};
+const cta = product?.cta ?? industry?.cta ?? { label: "Start a 30-day trial", href: "/checkout", trialEligible: true };
+const outcomes = product?.outcomes ?? industry?.pains ?? ["One customer record", "Connected operations", "AI inside the work"];
+---
+
+<section id={slice.id} class:list={["hero", `hero--${slice.theme}`]} aria-labelledby={`${slice.id}-title`}>
+  <CircleAccent size="large" tone="outline" class="hero__orbit" />
+  <div class="sk-container hero__grid">
+    <div class="hero__copy">
+      <p class="sk-eyebrow">{hero.eyebrow}</p>
+      <h1 id={`${slice.id}-title`} class="sk-display">{hero.title}</h1>
+      <p class="hero__body">{hero.body}</p>
+      <div class="hero__actions">
+        <Button href={cta.href} size="large" arrow>{cta.label}</Button>
+        <Button href={product ? `/pricing#${product.slug}` : "/products"} variant="quiet" size="large">{product ? "See pricing" : "Explore products"}</Button>
+      </div>
+      {cta.trialEligible && <p class="hero__trial">30 days · no credit card required</p>}
+    </div>
+    <aside class="hero__proof" aria-label="What this changes">
+      <span class="hero__dot"></span>
+      <p>{product ? product.tagline : industry ? `Built for ${industry.name}` : "The connected Sidekick platform"}</p>
+      <ol>{outcomes.slice(0, 3).map((outcome, index) => <li><span>0{index + 1}</span>{outcome}</li>)}</ol>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: min(52rem, calc(100svh - 3rem)); padding-block: clamp(6rem, 11vw, 10rem); overflow: clip; background: var(--sk-gradient-night); color: var(--sk-color-white); }
+  .hero--blue { background: var(--sk-gradient-cape); }
+  .hero__orbit { position: absolute; top: -8rem; right: -4rem; opacity: 0.65; scale: 1.8; }
+  .hero__grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr); align-items: end; gap: clamp(3rem, 9vw, 9rem); }
+  .hero__copy { max-width: 64rem; }
+  .hero__copy > .sk-eyebrow { margin-bottom: var(--sk-space-8); color: var(--sk-color-blue-300); }
+  .hero__body { max-width: 44rem; margin-top: var(--sk-space-8); color: rgb(255 255 255 / 69%); font-size: var(--sk-text-lg); }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--sk-space-3); margin-top: var(--sk-space-10); }
+  .hero__trial { margin-top: var(--sk-space-4); color: rgb(255 255 255 / 46%); font-size: var(--sk-text-xs); }
+  .hero__proof { position: relative; padding: var(--sk-space-8); border: 1px solid var(--sk-color-line-dark); border-radius: var(--sk-radius-card); background: rgb(255 255 255 / 5%); backdrop-filter: blur(1rem); }
+  .hero__dot { position: absolute; top: -0.35rem; right: 1.5rem; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--sk-color-blue-400); box-shadow: 0 0 2rem var(--sk-color-blue-400); }
+  .hero__proof > p { color: rgb(255 255 255 / 56%); font-size: var(--sk-text-sm); }
+  ol { display: grid; gap: var(--sk-space-5); padding: var(--sk-space-8) 0 0; margin: 0; list-style: none; }
+  li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--sk-space-3); font-family: var(--sk-font-heading); font-size: var(--sk-text-sm); line-height: 1.35; }
+  li span { color: var(--sk-color-blue-300); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
+  @media (max-width: 52rem) { .hero { min-height: auto; } .hero__grid { grid-template-columns: 1fr; } .hero__proof { max-width: 30rem; } }
+</style>

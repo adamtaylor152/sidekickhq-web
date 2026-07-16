@@ -1,0 +1,34 @@
+---
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product } = Astro.props;
+const groups = product?.featureGroups ?? [];
+---
+
+<SliceFrame slice={slice} eyebrow="Product depth" title={product ? `The ${product.name} capability map` : "Connected where it matters"} body="Feature depth is grouped around jobs the business recognizes—not an endless checklist." wide>
+  <div class="ledger">
+    {groups.map((group, index) => (
+      <section>
+        <div class="number">{String(index + 1).padStart(2, "0")}</div>
+        <div><h3>{group.title}</h3><p>{group.description}</p></div>
+        <ul>{group.features.map((feature) => <li>{feature}</li>)}</ul>
+      </section>
+    ))}
+  </div>
+</SliceFrame>
+
+<style>
+  .ledger { border-top: 1px solid currentColor; }
+  .ledger > section { display: grid; grid-template-columns: 4rem minmax(14rem, 0.7fr) minmax(18rem, 1.3fr); gap: var(--sk-space-8); padding-block: var(--sk-space-10); border-bottom: 1px solid currentColor; }
+  .number { color: var(--sk-color-blue-400); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
+  h3 { font-size: var(--sk-text-2xl); }
+  section > div > p { margin-top: var(--sk-space-4); color: var(--sk-color-ink-muted); }
+  ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sk-space-3) var(--sk-space-6); padding: 0; margin: 0; list-style: none; }
+  li { position: relative; padding-left: var(--sk-space-5); }
+  li::before { position: absolute; top: 0.7em; left: 0; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--sk-color-blue-500); content: ""; }
+  :global(.slice--navy) section > div > p { color: rgb(255 255 255 / 56%); }
+  @media (max-width: 54rem) { .ledger > section { grid-template-columns: 2rem 1fr; } ul { grid-column: 2; } }
+  @media (max-width: 34rem) { ul { grid-template-columns: 1fr; } }
+</style>

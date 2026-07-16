@@ -1,0 +1,38 @@
+---
+import LinkArrow from "@/components/ui/LinkArrow.astro";
+import { INDUSTRIES } from "@/content/industries";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product } = Astro.props;
+const paths = product
+  ? INDUSTRIES.filter((industry) => product.relevantIndustries.includes(industry.slug)).slice(0, 6)
+  : INDUSTRIES.filter((_, index) => [0, 8, 18, 26, 35, 39].includes(index));
+---
+
+<SliceFrame slice={slice} eyebrow="Built for the way you work" title={product ? `${product.name} in your industry` : "Different businesses. Connected operating patterns."} body="Start from the work your team recognizes, then see the Sidekick products that support it." wide>
+  <div class="pathways">
+    {paths.map((industry, index) => (
+      <article>
+        <span>{industry.family}</span>
+        <h3>{industry.name}</h3>
+        <p>{industry.hero.body}</p>
+        <LinkArrow href={`/industries/${industry.slug}`}>See the workflows</LinkArrow>
+        <div aria-hidden="true">{String(index + 1).padStart(2, "0")}</div>
+      </article>
+    ))}
+  </div>
+</SliceFrame>
+
+<style>
+  .pathways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sk-space-4); }
+  article { position: relative; display: grid; min-height: 25rem; align-content: start; padding: var(--sk-space-8); overflow: hidden; border: 1px solid var(--sk-color-line); border-radius: var(--sk-radius-card); background: var(--sk-color-white); color: var(--sk-color-ink); }
+  article > span { color: var(--sk-color-blue-600); font-size: var(--sk-text-xs); letter-spacing: var(--sk-tracking-wide); text-transform: uppercase; }
+  h3 { max-width: 14ch; margin-top: var(--sk-space-6); font-size: var(--sk-text-2xl); }
+  article > p { margin-block: var(--sk-space-5) auto; color: var(--sk-color-ink-muted); font-size: var(--sk-text-sm); }
+  article > div { position: absolute; right: -0.8rem; bottom: -2.4rem; color: var(--sk-color-paper); font-family: var(--sk-font-heading); font-size: 8rem; font-weight: 600; line-height: 1; pointer-events: none; }
+  article :global(.link-arrow) { position: relative; z-index: 1; margin-top: var(--sk-space-8); }
+  @media (max-width: 62rem) { .pathways { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 38rem) { .pathways { grid-template-columns: 1fr; } article { min-height: 21rem; } }
+</style>

@@ -1,0 +1,45 @@
+---
+import Button from "@/components/ui/Button.astro";
+import { getProductEditions } from "@/content/editions";
+import type { SliceProps } from "./slice-types";
+import SliceFrame from "./SliceFrame.astro";
+
+type Props = SliceProps;
+const { slice, product } = Astro.props;
+const editions = product ? getProductEditions(product.slug) : [];
+---
+
+<SliceFrame slice={slice} eyebrow="Editions" title={product ? `Choose the ${product.name} depth that fits now` : "Choose a clear starting point"} body="Move up when the operation needs more automation, control, integration, or scale—not because essential work was hidden." wide>
+  <div class="editions">
+    {editions.map((edition, index) => (
+      <article class:list={{ recommended: index === 1 }} data-offer-key={edition.offerKey}>
+        {index === 1 && <span class="badge">Recommended</span>}
+        <p class="edition-name">{edition.slug}</p>
+        <h3>{edition.summary}</h3>
+        <div class="price" data-price-for={edition.offerKey}><span>See live price</span><small>per {edition.billingUnit}</small></div>
+        <p class="best">{edition.bestFor}</p>
+        <ul>{edition.includes.map((feature) => <li>{feature}</li>)}</ul>
+        <Button href={`/checkout?offer=${edition.offerKey}`} variant={index === 1 ? "primary" : "secondary"}>{edition.trialEligible ? "Start 30-day trial" : "Get started"}</Button>
+        <a href={`/products/${edition.productSlug}/editions/${edition.slug}`}>Full edition details <span aria-hidden="true">→</span></a>
+      </article>
+    ))}
+  </div>
+</SliceFrame>
+
+<style>
+  .editions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sk-space-4); }
+  article { position: relative; display: flex; min-height: 38rem; flex-direction: column; padding: var(--sk-space-8); border: 1px solid var(--sk-color-line); border-radius: var(--sk-radius-card); background: var(--sk-color-white); color: var(--sk-color-ink); }
+  article.recommended { border-color: var(--sk-color-blue-400); box-shadow: var(--sk-shadow-soft); }
+  .badge { position: absolute; top: var(--sk-space-5); right: var(--sk-space-5); padding: var(--sk-space-1) var(--sk-space-3); border-radius: var(--sk-radius-pill); background: var(--sk-color-blue-100); color: var(--sk-color-blue-700); font-size: var(--sk-text-xs); font-weight: 600; }
+  .edition-name { color: var(--sk-color-blue-600); font-size: var(--sk-text-xs); letter-spacing: var(--sk-tracking-wide); text-transform: uppercase; }
+  h3 { margin-top: var(--sk-space-6); font-size: var(--sk-text-xl); }
+  .price { display: grid; gap: var(--sk-space-1); min-height: 4.4rem; margin-top: var(--sk-space-8); }
+  .price span { font-family: var(--sk-font-heading); font-size: var(--sk-text-2xl); font-weight: 600; }
+  .price small, .best { color: var(--sk-color-ink-muted); }
+  .best { min-height: 5rem; margin-top: var(--sk-space-5); font-size: var(--sk-text-sm); }
+  ul { display: grid; gap: var(--sk-space-3); padding: var(--sk-space-6) 0; margin: 0 0 auto; border-top: 1px solid var(--sk-color-line); list-style: none; }
+  li { position: relative; padding-left: var(--sk-space-5); font-size: var(--sk-text-sm); }
+  li::before { position: absolute; left: 0; color: var(--sk-color-blue-500); content: "•"; }
+  article > a { margin-top: var(--sk-space-5); color: var(--sk-color-blue-600); font-size: var(--sk-text-sm); text-align: center; text-decoration: none; }
+  @media (max-width: 60rem) { .editions { grid-template-columns: 1fr; } article { min-height: 0; } .best { min-height: 0; } }
+</style>
