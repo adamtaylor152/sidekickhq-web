@@ -1,0 +1,87 @@
+:root {
+  color-scheme: light;
+
+  --sk-color-navy-950: #030d22;
+  --sk-color-navy-900: #071631;
+  --sk-color-navy-800: #0c2145;
+  --sk-color-navy-700: #15315c;
+  --sk-color-blue-700: #164fce;
+  --sk-color-blue-600: #1d62e2;
+  --sk-color-blue-500: #2f75ed;
+  --sk-color-blue-400: #51a2fa;
+  --sk-color-blue-300: #82bdff;
+  --sk-color-blue-100: #dcecff;
+  --sk-color-paper: #f5f1e8;
+  --sk-color-paper-deep: #ebe4d7;
+  --sk-color-white: #ffffff;
+  --sk-color-ink: #0a1730;
+  --sk-color-ink-muted: #536178;
+  --sk-color-line: #d9dfeb;
+  --sk-color-line-dark: rgb(255 255 255 / 14%);
+  --sk-color-success: #0c8568;
+  --sk-color-warning: #a45708;
+  --sk-color-danger: #bc3650;
+  --sk-color-focus: #69b5ff;
+
+  --sk-gradient-cape: linear-gradient(135deg, #62afff 0%, #2e70ed 48%, #1654d8 100%);
+  --sk-gradient-night: radial-gradient(circle at 76% 18%, rgb(47 117 237 / 28%), transparent 34%), linear-gradient(145deg, #030d22 0%, #071631 72%, #0d2653 100%);
+  --sk-gradient-paper: linear-gradient(145deg, #ffffff 0%, #f5f1e8 100%);
+
+  --sk-font-heading: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+  --sk-font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --sk-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --sk-text-xs: 0.75rem;
+  --sk-text-sm: 0.875rem;
+  --sk-text-base: 1rem;
+  --sk-text-lg: clamp(1.0625rem, 0.98rem + 0.3vw, 1.25rem);
+  --sk-text-xl: clamp(1.25rem, 1.08rem + 0.65vw, 1.625rem);
+  --sk-text-2xl: clamp(1.625rem, 1.26rem + 1.35vw, 2.4rem);
+  --sk-text-3xl: clamp(2.1rem, 1.55rem + 2.2vw, 3.5rem);
+  --sk-text-display: clamp(3rem, 1.8rem + 4.6vw, 6.4rem);
+
+  --sk-leading-tight: 0.97;
+  --sk-leading-heading: 1.08;
+  --sk-leading-body: 1.62;
+  --sk-tracking-tight: -0.045em;
+  --sk-tracking-heading: -0.025em;
+  --sk-tracking-wide: 0.11em;
+
+  --sk-space-1: 0.25rem;
+  --sk-space-2: 0.5rem;
+  --sk-space-3: 0.75rem;
+  --sk-space-4: 1rem;
+  --sk-space-5: 1.25rem;
+  --sk-space-6: 1.5rem;
+  --sk-space-8: 2rem;
+  --sk-space-10: 2.5rem;
+  --sk-space-12: 3rem;
+  --sk-space-16: 4rem;
+  --sk-space-20: 5rem;
+  --sk-space-24: 6rem;
+  --sk-space-32: 8rem;
+  --sk-section-space: clamp(5rem, 9vw, 9rem);
+  --sk-gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  --sk-radius-sm: 0.5rem;
+  --sk-radius-md: 0.9rem;
+  --sk-radius-card: 1.4rem;
+  --sk-radius-stage: 2rem;
+  --sk-radius-pill: 999px;
+
+  --sk-shadow-soft: 0 1.5rem 4rem rgb(5 18 43 / 10%);
+  --sk-shadow-stage: 0 2rem 6rem rgb(3 13 34 / 24%);
+  --sk-shadow-focus: 0 0 0 0.22rem rgb(105 181 255 / 46%);
+
+  --sk-duration-fast: 140ms;
+  --sk-duration-base: 240ms;
+  --sk-duration-slow: 560ms;
+  --sk-ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --sk-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --sk-container-narrow: 48rem;
+  --sk-container-copy: 64rem;
+  --sk-container-page: 82rem;
+  --sk-container-wide: 96rem;
+  --sk-header-height: 4.75rem;
+}
