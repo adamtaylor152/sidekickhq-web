@@ -13,6 +13,7 @@ WORKDIR /app
 ENV HOST=0.0.0.0
 ENV NODE_ENV=production
 ENV PORT=3000
+RUN apk add --no-cache curl
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
