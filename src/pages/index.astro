@@ -284,11 +284,29 @@ const description =
       item.setAttribute("role", "option");
       const button = document.createElement("button");
       button.type = "button";
+      button.className = "company-suggestion";
+      const pin = document.createElement("span");
+      pin.className = "company-suggestion__pin";
+      pin.setAttribute("aria-hidden", "true");
+      const content = document.createElement("span");
+      content.className = "company-suggestion__content";
+      const heading = document.createElement("span");
+      heading.className = "company-suggestion__heading";
       const primary = document.createElement("strong");
       primary.textContent = suggestion.primaryText;
+      const match = document.createElement("span");
+      match.className = "company-suggestion__match";
+      match.textContent = "Business match";
       const secondary = document.createElement("span");
+      secondary.className = "company-suggestion__address";
       secondary.textContent = suggestion.secondaryText || suggestion.fullText;
-      button.append(primary, secondary);
+      const arrow = document.createElement("span");
+      arrow.className = "company-suggestion__arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      heading.append(primary, match);
+      content.append(heading, secondary);
+      button.append(pin, content, arrow);
       button.addEventListener("click", () => {
         selectedPlaceId = suggestion.placeId;
         companyInput.value = suggestion.primaryText;
@@ -427,11 +445,21 @@ const description =
   input:not([type="checkbox"]):focus { border-color: var(--sk-color-blue-500); box-shadow: 0 0 0 0.22rem rgb(47 117 237 / 15%); }
   .company-field { position: relative; }
   .company-field small { color: var(--sk-color-ink-muted); font-size: 0.72rem; font-weight: 400; }
-  .company-suggestions { position: absolute; top: 5rem; right: 0; left: 0; z-index: 5; max-height: 18rem; padding: 0.45rem; overflow-y: auto; border: 1px solid #bec9d7; border-radius: 0.85rem; background: white; box-shadow: 0 1.2rem 3rem rgb(3 13 34 / 16%); list-style: none; }
-  .company-suggestions button { display: grid; width: 100%; gap: 0.15rem; padding: 0.8rem; border: 0; border-radius: 0.55rem; background: transparent; text-align: left; cursor: pointer; }
-  .company-suggestions button:hover, .company-suggestions button:focus-visible { background: var(--sk-color-blue-100); }
-  .company-suggestions strong { font-size: 0.86rem; }
-  .company-suggestions span { color: var(--sk-color-ink-muted); font-size: 0.72rem; }
+  .company-suggestions { position: absolute; top: 5rem; right: 0; left: 0; z-index: 5; max-height: 20rem; padding: 0.5rem; overflow-y: auto; border: 1px solid #b8c6d8; border-radius: 1rem; background: rgb(255 255 255 / 97%); box-shadow: 0 1.5rem 4rem rgb(3 13 34 / 18%), 0 0.2rem 0.8rem rgb(47 117 237 / 8%); list-style: none; backdrop-filter: blur(1rem); }
+  .company-suggestions li + li { border-top: 1px solid var(--sk-color-line); }
+  :global(.company-suggestion) { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; width: 100%; align-items: center; gap: 0.8rem; padding: 0.85rem 0.75rem; border: 0; border-radius: 0.7rem; background: transparent; color: var(--sk-color-ink); text-align: left; cursor: pointer; transition: background 150ms ease, transform 150ms ease; }
+  :global(.company-suggestion:hover), :global(.company-suggestion:focus-visible) { background: linear-gradient(90deg, var(--sk-color-blue-100), rgb(255 255 255 / 65%)); outline: none; transform: translateX(0.12rem); }
+  :global(.company-suggestion:focus-visible) { box-shadow: inset 0 0 0 2px var(--sk-color-blue-500); }
+  :global(.company-suggestion__pin) { position: relative; display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border: 1px solid rgb(47 117 237 / 18%); border-radius: 0.72rem; background: linear-gradient(145deg, #eef5ff, #dbeaff); }
+  :global(.company-suggestion__pin)::before { width: 0.72rem; height: 0.72rem; border: 0.2rem solid var(--sk-color-blue-600); border-radius: 50% 50% 50% 0; content: ""; transform: rotate(-45deg); }
+  :global(.company-suggestion__pin)::after { position: absolute; top: 0.82rem; width: 0.18rem; height: 0.18rem; border-radius: 50%; background: var(--sk-color-blue-600); content: ""; }
+  :global(.company-suggestion__content) { display: grid; min-width: 0; gap: 0.3rem; }
+  :global(.company-suggestion__heading) { display: flex; min-width: 0; align-items: center; gap: 0.55rem; }
+  :global(.company-suggestion strong) { overflow: hidden; font-size: 0.9rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+  :global(.company-suggestion__match) { flex: none; padding: 0.18rem 0.42rem; border-radius: 999px; background: rgb(5 168 162 / 11%); color: #087f79; font-size: 0.58rem; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; }
+  :global(.company-suggestion__address) { overflow: hidden; color: var(--sk-color-ink-muted); font-size: 0.72rem; font-weight: 450; text-overflow: ellipsis; white-space: nowrap; }
+  :global(.company-suggestion__arrow) { color: var(--sk-color-blue-600); font-size: 0.95rem; opacity: 0; transform: translateX(-0.3rem); transition: opacity 150ms ease, transform 150ms ease; }
+  :global(.company-suggestion:hover .company-suggestion__arrow), :global(.company-suggestion:focus-visible .company-suggestion__arrow) { opacity: 1; transform: translateX(0); }
   .consent-field { display: grid; grid-template-columns: 1.1rem 1fr; gap: 0.75rem; align-items: start; color: var(--sk-color-ink-muted); font-size: 0.75rem; line-height: 1.5; cursor: pointer; }
   .consent-field input { width: 1rem; height: 1rem; margin-top: 0.16rem; accent-color: var(--sk-color-blue-600); }
   .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }

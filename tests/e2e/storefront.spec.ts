@@ -48,6 +48,35 @@ test("invite form sends an explicit marketing preference and offers existing-use
   await expect(page.getByRole("link", { name: "Already granted early access?" })).toHaveAttribute("href", "https://app.sidekickhq.ca");
 });
 
+test("company suggestions present business identity and location clearly", async ({ page }) => {
+  await page.route("**/api/early-access", (route) => route.fulfill({ json: { data: { count: 2_312, people: [] } } }));
+  await page.route("**/api/places/autocomplete**", (route) =>
+    route.fulfill({
+      json: {
+        data: {
+          suggestions: [
+            {
+              placeId: "places/sidekick-cafe",
+              fullText: "Sidekick Cafe, 101 8 Avenue SW, Calgary, AB, Canada",
+              primaryText: "Sidekick Cafe",
+              secondaryText: "101 8 Avenue SW, Calgary, AB, Canada",
+            },
+          ],
+        },
+      },
+    }),
+  );
+
+  await page.goto("/#invite");
+  await page.getByRole("combobox", { name: "Company" }).fill("Sidekick");
+
+  const option = page.getByRole("option");
+  await expect(option.getByText("Sidekick Cafe", { exact: true })).toBeVisible();
+  await expect(option.getByText("101 8 Avenue SW, Calgary, AB, Canada", { exact: true })).toBeVisible();
+  await expect(option.getByText("Business match", { exact: true })).toBeVisible();
+  await expect(option.locator(".company-suggestion__pin")).toBeVisible();
+});
+
 test("landing page links to a complete Sidekick privacy policy", async ({ page }) => {
   await page.goto("/");
   await page
