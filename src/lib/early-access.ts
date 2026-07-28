@@ -1,6 +1,4 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import type { Pool, PoolClient } from "pg";
 import { z } from "zod";
 
 export const VERIFIED_HERONET_BASELINE = 2_312;
@@ -28,11 +26,6 @@ export type EarlyAccessSubmission = {
   publicDisplayConsent: boolean;
   marketingCommunicationsConsent: boolean;
   googlePlace?: GooglePlaceData;
-};
-
-type StoredSignup = EarlyAccessSubmission & {
-  signupNumber: number;
-  createdAt: string;
 };
 
 const googlePlaceSchema = z.object({
@@ -76,413 +69,202 @@ export function validateEarlyAccessSubmission(input: unknown): EarlyAccessSubmis
   return submission;
 }
 
-const CSV_HEADERS = [
-  "signup_number",
-  "created_at",
-  "first_name",
-  "last_name",
-  "email",
-  "company_name",
-  "public_display_consent",
-  "marketing_communications_consent",
-  "google_place_id",
-  "google_display_name",
-  "google_formatted_address",
-  "google_address_components_json",
-  "google_latitude",
-  "google_longitude",
-  "google_business_status",
-  "google_primary_type",
-  "google_types_json",
-  "google_website_uri",
-  "google_national_phone",
-  "google_maps_uri",
-  "google_raw_json",
-] as const;
+type RegistrationRow = {
+  signup_number: string | number;
+  created_at: Date | string;
+  first_name: string;
+  last_name: string;
+};
 
 export class EarlyAccessStore {
-  private readonly csvPath: string;
-  private readonly sqlitePath: string;
+  private readonly pool: Pool;
   private readonly baselineCount: number;
-  private initialized = false;
-  private database: DatabaseSync | null = null;
-  private queue: Promise<unknown> = Promise.resolve();
+  private initialization: Promise<void> | null = null;
 
-  constructor(options: { csvPath: string; sqlitePath?: string; baselineCount?: number }) {
-    this.csvPath = options.csvPath;
-    this.sqlitePath = options.sqlitePath ?? this.csvPath.replace(/\.csv$/i, ".sqlite");
+  constructor(options: { pool: Pool; baselineCount?: number }) {
+    this.pool = options.pool;
     this.baselineCount = options.baselineCount ?? VERIFIED_HERONET_BASELINE;
   }
 
   async submit(submission: EarlyAccessSubmission) {
-    return this.exclusive(async () => {
-      await this.initialize();
-      const database = this.getDatabase();
-      const existing = this.findByEmail(submission.email);
+    await this.ensureSchema();
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const counterResult = await client.query<{ current_count: string | number }>(`
+        SELECT current_count
+        FROM early_access_counter
+        WHERE singleton = TRUE
+        FOR UPDATE
+      `);
+      const currentCount = Number(counterResult.rows[0]?.current_count);
+      if (!Number.isFinite(currentCount)) throw new Error("Early-access counter is unavailable.");
+
+      const existingResult = await client.query<{ signup_number: string | number }>(`
+        SELECT signup_number
+        FROM early_access_registrations
+        WHERE email = $1
+      `, [submission.email]);
+      const existing = existingResult.rows[0];
       if (existing) {
+        await client.query("COMMIT");
         return {
           created: false,
-          signupNumber: existing.signupNumber,
-          count: this.baselineCount + this.rowCount(),
+          signupNumber: Number(existing.signup_number),
+          count: currentCount,
         };
       }
 
-      const record: StoredSignup = {
-        ...submission,
-        signupNumber: this.baselineCount + this.rowCount() + 1,
-        createdAt: new Date().toISOString(),
-      };
-      database
-        .prepare(`
-          INSERT INTO early_access_signups (
-            signup_number, created_at, first_name, last_name, email,
-            company_name, public_display_consent, marketing_communications_consent,
-            google_place_json
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `)
-        .run(
-          record.signupNumber,
-          record.createdAt,
-          record.firstName,
-          record.lastName,
-          record.email,
-          record.companyName,
-          record.publicDisplayConsent ? 1 : 0,
-          record.marketingCommunicationsConsent ? 1 : 0,
-          JSON.stringify(record.googlePlace ?? null),
-        );
-      await this.syncCsvMirror();
-      return {
-        created: true,
-        signupNumber: record.signupNumber,
-        count: this.baselineCount + this.rowCount(),
-      };
-    });
+      const signupNumber = currentCount + 1;
+      await this.insertRegistration(client, submission, signupNumber);
+      await client.query(`
+        UPDATE early_access_counter
+        SET current_count = $1, updated_at = NOW()
+        WHERE singleton = TRUE
+      `, [signupNumber]);
+      await client.query("COMMIT");
+      return { created: true, signupNumber, count: signupNumber };
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async getCount() {
-    return this.exclusive(async () => {
-      await this.initialize();
-      return this.baselineCount + this.rowCount();
-    });
+    await this.ensureSchema();
+    const result = await this.pool.query<{ current_count: string | number }>(`
+      SELECT current_count FROM early_access_counter WHERE singleton = TRUE
+    `);
+    return Number(result.rows[0]?.current_count ?? this.baselineCount);
   }
 
   async getSocialProof() {
-    return this.exclusive(async () => {
-      await this.initialize();
-      const rows = this.getDatabase()
-        .prepare(`
-          SELECT signup_number, created_at, first_name, last_name, email,
-                 company_name, public_display_consent, marketing_communications_consent,
-                 google_place_json
-          FROM early_access_signups
-          WHERE public_display_consent = 1
-          ORDER BY signup_number DESC
-          LIMIT 50
-        `)
-        .all() as unknown as StoredRow[];
-      return {
-        count: this.baselineCount + this.rowCount(),
-        people: rows
-          .map(fromStoredRow)
-          .map((record) => ({
-            displayName: `${record.firstName} ${record.lastName.slice(0, 1).toUpperCase()}.`,
-            signupNumber: record.signupNumber,
-            createdAt: record.createdAt,
-          })),
-      };
-    });
+    await this.ensureSchema();
+    const [count, registrations] = await Promise.all([
+      this.getCount(),
+      this.pool.query<RegistrationRow>(`
+        SELECT signup_number, created_at, first_name, last_name
+        FROM early_access_registrations
+        WHERE public_display_consent = TRUE
+        ORDER BY signup_number DESC
+        LIMIT 50
+      `),
+    ]);
+    return {
+      count,
+      people: registrations.rows.map((record) => ({
+        displayName: `${record.first_name} ${record.last_name.slice(0, 1).toUpperCase()}.`,
+        signupNumber: Number(record.signup_number),
+        createdAt: toIsoString(record.created_at),
+      })),
+    };
+  }
+
+  private ensureSchema() {
+    if (!this.initialization) {
+      this.initialization = this.initialize().catch((error) => {
+        this.initialization = null;
+        throw error;
+      });
+    }
+    return this.initialization;
   }
 
   private async initialize() {
-    if (this.initialized) return;
-    await mkdir(dirname(this.csvPath), { recursive: true });
-    this.database = new DatabaseSync(this.sqlitePath);
-    this.database.exec(`
-      PRAGMA journal_mode = WAL;
-      PRAGMA synchronous = FULL;
-      CREATE TABLE IF NOT EXISTS early_access_signups (
-        signup_number INTEGER NOT NULL UNIQUE,
-        created_at TEXT NOT NULL,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE COLLATE NOCASE,
-        company_name TEXT NOT NULL,
-        public_display_consent INTEGER NOT NULL DEFAULT 0,
-        marketing_communications_consent INTEGER NOT NULL DEFAULT 0,
-        google_place_json TEXT NOT NULL DEFAULT 'null'
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS early_access_counter (
+        singleton BOOLEAN PRIMARY KEY DEFAULT TRUE,
+        current_count BIGINT NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        CONSTRAINT early_access_counter_singleton CHECK (singleton = TRUE)
       );
-      CREATE INDEX IF NOT EXISTS early_access_signups_public_recent
-        ON early_access_signups (public_display_consent, signup_number DESC);
+
+      CREATE TABLE IF NOT EXISTS early_access_registrations (
+        id BIGSERIAL PRIMARY KEY,
+        signup_number BIGINT NOT NULL UNIQUE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        first_name VARCHAR(80) NOT NULL,
+        last_name VARCHAR(80) NOT NULL,
+        email VARCHAR(254) NOT NULL UNIQUE,
+        company_name VARCHAR(300) NOT NULL,
+        public_display_consent BOOLEAN NOT NULL DEFAULT FALSE,
+        marketing_communications_consent BOOLEAN NOT NULL DEFAULT FALSE,
+        google_place_id VARCHAR(512),
+        google_display_name VARCHAR(300),
+        google_formatted_address VARCHAR(1000),
+        google_address_components JSONB NOT NULL,
+        google_latitude DOUBLE PRECISION,
+        google_longitude DOUBLE PRECISION,
+        google_business_status VARCHAR(100),
+        google_primary_type VARCHAR(100),
+        google_types TEXT[] NOT NULL,
+        google_website_uri VARCHAR(2000),
+        google_national_phone VARCHAR(100),
+        google_maps_uri VARCHAR(2000),
+        google_raw JSONB NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS early_access_registrations_public_recent
+        ON early_access_registrations (public_display_consent, signup_number DESC);
+      CREATE INDEX IF NOT EXISTS early_access_registrations_primary_type
+        ON early_access_registrations (google_primary_type);
     `);
-    const columns = this.database.prepare("PRAGMA table_info(early_access_signups)").all() as unknown as Array<{ name: string }>;
-    if (!columns.some((column) => column.name === "marketing_communications_consent")) {
-      this.database.exec("ALTER TABLE early_access_signups ADD COLUMN marketing_communications_consent INTEGER NOT NULL DEFAULT 0");
-    }
-
-    try {
-      const csv = await readFile(this.csvPath, "utf8");
-      if (this.rowCount() === 0) {
-        for (const record of parseStoredRecords(csv)) this.insertImportedRecord(record);
-      }
-    } catch (error) {
-      if (!isMissingFile(error)) throw error;
-    }
-    await this.syncCsvMirror();
-    this.initialized = true;
+    await this.pool.query(`
+      INSERT INTO early_access_counter (singleton, current_count)
+      VALUES (TRUE, $1)
+      ON CONFLICT (singleton) DO NOTHING
+    `, [this.baselineCount]);
   }
 
-  private getDatabase() {
-    if (!this.database) throw new Error("Early-access store is not initialized.");
-    return this.database;
-  }
-
-  private rowCount() {
-    const row = this.getDatabase()
-      .prepare("SELECT COUNT(*) AS count FROM early_access_signups")
-      .get() as unknown as { count: number | bigint };
-    return Number(row.count);
-  }
-
-  private findByEmail(email: string) {
-    const row = this.getDatabase()
-      .prepare(`
-        SELECT signup_number, created_at, first_name, last_name, email,
-               company_name, public_display_consent, marketing_communications_consent,
-               google_place_json
-        FROM early_access_signups WHERE email = ? COLLATE NOCASE
-      `)
-      .get(email) as unknown as StoredRow | undefined;
-    return row ? fromStoredRow(row) : null;
-  }
-
-  private insertImportedRecord(record: StoredSignup) {
-    this.getDatabase()
-      .prepare(`
-        INSERT OR IGNORE INTO early_access_signups (
-          signup_number, created_at, first_name, last_name, email,
-          company_name, public_display_consent, marketing_communications_consent,
-          google_place_json
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `)
-      .run(
-        record.signupNumber,
-        record.createdAt,
-        record.firstName,
-        record.lastName,
-        record.email,
-        record.companyName,
-        record.publicDisplayConsent ? 1 : 0,
-        record.marketingCommunicationsConsent ? 1 : 0,
-        JSON.stringify(record.googlePlace ?? null),
-      );
-  }
-
-  private async syncCsvMirror() {
-    const records = (
-      this.getDatabase()
-        .prepare(`
-          SELECT signup_number, created_at, first_name, last_name, email,
-                 company_name, public_display_consent, marketing_communications_consent,
-                 google_place_json
-          FROM early_access_signups ORDER BY signup_number
-        `)
-        .all() as unknown as StoredRow[]
-    ).map(fromStoredRow);
-    const body = [CSV_HEADERS.join(","), ...records.map(serializeRecord), ""].join("\n");
-    const temporaryPath = `${this.csvPath}.tmp-${process.pid}`;
-    await writeFile(temporaryPath, body, { encoding: "utf8", mode: 0o600 });
-    await rename(temporaryPath, this.csvPath);
-  }
-
-  private exclusive<T>(operation: () => Promise<T>): Promise<T> {
-    const run = this.queue.then(operation, operation);
-    this.queue = run.then(
-      () => undefined,
-      () => undefined,
-    );
-    return run;
+  private async insertRegistration(
+    client: PoolClient,
+    submission: EarlyAccessSubmission,
+    signupNumber: number,
+  ) {
+    const place = submission.googlePlace;
+    await client.query(`
+      INSERT INTO early_access_registrations (
+        signup_number, first_name, last_name, email, company_name,
+        public_display_consent, marketing_communications_consent,
+        google_place_id, google_display_name, google_formatted_address,
+        google_address_components, google_latitude, google_longitude,
+        google_business_status, google_primary_type, google_types,
+        google_website_uri, google_national_phone, google_maps_uri, google_raw
+      ) VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7,
+        $8, $9, $10,
+        $11::jsonb, $12, $13,
+        $14, $15, $16,
+        $17, $18, $19, $20::jsonb
+      )
+    `, [
+      signupNumber,
+      submission.firstName,
+      submission.lastName,
+      submission.email,
+      submission.companyName,
+      submission.publicDisplayConsent,
+      submission.marketingCommunicationsConsent,
+      place?.placeId ?? null,
+      place?.displayName ?? null,
+      place?.formattedAddress ?? null,
+      JSON.stringify(place?.addressComponents ?? []),
+      place?.location?.latitude ?? null,
+      place?.location?.longitude ?? null,
+      place?.businessStatus ?? null,
+      place?.primaryType ?? null,
+      place?.types ?? [],
+      place?.websiteUri ?? null,
+      place?.nationalPhoneNumber ?? null,
+      place?.googleMapsUri ?? null,
+      JSON.stringify(place?.raw ?? {}),
+    ]);
   }
 }
 
-type StoredRow = {
-  signup_number: number | bigint;
-  created_at: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  company_name: string;
-  public_display_consent: number | bigint;
-  marketing_communications_consent: number | bigint;
-  google_place_json: string;
-};
-
-function fromStoredRow(row: StoredRow): StoredSignup {
-  return {
-    signupNumber: Number(row.signup_number),
-    createdAt: row.created_at,
-    firstName: row.first_name,
-    lastName: row.last_name,
-    email: row.email,
-    companyName: row.company_name,
-    publicDisplayConsent: Number(row.public_display_consent) === 1,
-    marketingCommunicationsConsent: Number(row.marketing_communications_consent) === 1,
-    googlePlace: parseGooglePlace(row.google_place_json),
-  };
-}
-
-function parseGooglePlace(value: string): GooglePlaceData | undefined {
-  try {
-    const parsed = JSON.parse(value) as unknown;
-    return parsed ? googlePlaceSchema.parse(parsed) : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function serializeRecord(record: StoredSignup) {
-  const place = record.googlePlace;
-  return [
-    record.signupNumber,
-    record.createdAt,
-    record.firstName,
-    record.lastName,
-    record.email,
-    record.companyName,
-    record.publicDisplayConsent,
-    record.marketingCommunicationsConsent,
-    place?.placeId ?? "",
-    place?.displayName ?? "",
-    place?.formattedAddress ?? "",
-    JSON.stringify(place?.addressComponents ?? []),
-    place?.location?.latitude ?? "",
-    place?.location?.longitude ?? "",
-    place?.businessStatus ?? "",
-    place?.primaryType ?? "",
-    JSON.stringify(place?.types ?? []),
-    place?.websiteUri ?? "",
-    place?.nationalPhoneNumber ?? "",
-    place?.googleMapsUri ?? "",
-    JSON.stringify(place?.raw ?? {}),
-  ]
-    .map(csvCell)
-    .join(",");
-}
-
-function csvCell(value: unknown) {
-  const text = String(value ?? "");
-  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-}
-
-function parseStoredRecords(csv: string): StoredSignup[] {
-  const rows = parseCsv(csv);
-  if (rows.length < 2) return [];
-  const header = rows[0] ?? [];
-  const index = Object.fromEntries(header.map((name, position) => [name, position]));
-  return rows.slice(1).flatMap((row) => {
-    if (!row.length || !row[index.email ?? -1]) return [];
-    const placeId = row[index.google_place_id ?? -1] ?? "";
-    const googlePlace = placeId
-      ? {
-          placeId,
-          displayName: row[index.google_display_name ?? -1] ?? "",
-          formattedAddress: row[index.google_formatted_address ?? -1] || null,
-          addressComponents: parseJsonArray(row[index.google_address_components_json ?? -1]),
-          location: {
-            latitude: parseNullableNumber(row[index.google_latitude ?? -1]),
-            longitude: parseNullableNumber(row[index.google_longitude ?? -1]),
-          },
-          businessStatus: row[index.google_business_status ?? -1] || null,
-          primaryType: row[index.google_primary_type ?? -1] || null,
-          types: parseJsonArray(row[index.google_types_json ?? -1]).filter(
-            (value): value is string => typeof value === "string",
-          ),
-          websiteUri: row[index.google_website_uri ?? -1] || null,
-          nationalPhoneNumber: row[index.google_national_phone ?? -1] || null,
-          googleMapsUri: row[index.google_maps_uri ?? -1] || null,
-          raw: parseJsonObject(row[index.google_raw_json ?? -1]),
-        }
-      : undefined;
-    return [
-      {
-        signupNumber: Number(row[index.signup_number ?? -1]),
-        createdAt: row[index.created_at ?? -1] ?? "",
-        firstName: row[index.first_name ?? -1] ?? "",
-        lastName: row[index.last_name ?? -1] ?? "",
-        email: (row[index.email ?? -1] ?? "").toLowerCase(),
-        companyName: row[index.company_name ?? -1] ?? "",
-        publicDisplayConsent: row[index.public_display_consent ?? -1] === "true",
-        marketingCommunicationsConsent:
-          row[index.marketing_communications_consent ?? -1] === "true",
-        googlePlace,
-      },
-    ];
-  });
-}
-
-function parseCsv(csv: string) {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let value = "";
-  let quoted = false;
-  for (let position = 0; position < csv.length; position += 1) {
-    const character = csv[position];
-    if (quoted) {
-      if (character === '"' && csv[position + 1] === '"') {
-        value += '"';
-        position += 1;
-      } else if (character === '"') {
-        quoted = false;
-      } else {
-        value += character;
-      }
-    } else if (character === '"') {
-      quoted = true;
-    } else if (character === ",") {
-      row.push(value);
-      value = "";
-    } else if (character === "\n") {
-      row.push(value.replace(/\r$/, ""));
-      if (row.some(Boolean)) rows.push(row);
-      row = [];
-      value = "";
-    } else {
-      value += character;
-    }
-  }
-  if (value || row.length) {
-    row.push(value);
-    rows.push(row);
-  }
-  return rows;
-}
-
-function parseJsonArray(value: string | undefined): unknown[] {
-  try {
-    const parsed = JSON.parse(value || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function parseJsonObject(value: string | undefined): Record<string, unknown> {
-  try {
-    const parsed = JSON.parse(value || "{}");
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as Record<string, unknown>)
-      : {};
-  } catch {
-    return {};
-  }
-}
-
-function parseNullableNumber(value: string | undefined) {
-  if (!value) return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function isMissingFile(error: unknown) {
-  return Boolean(error && typeof error === "object" && "code" in error && error.code === "ENOENT");
+function toIsoString(value: Date | string) {
+  return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 }

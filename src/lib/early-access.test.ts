@@ -1,7 +1,5 @@
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import type { Pool } from "pg";
+import { newDb } from "pg-mem";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
@@ -9,20 +7,21 @@ import {
   validateEarlyAccessSubmission,
 } from "@/lib/early-access";
 
-const temporaryDirectories: string[] = [];
+const pools: Pool[] = [];
 
 afterEach(async () => {
-  await Promise.all(
-    temporaryDirectories.splice(0).map((directory) =>
-      rm(directory, { recursive: true, force: true }),
-    ),
-  );
+  await Promise.all(pools.splice(0).map((pool) => pool.end()));
 });
 
-async function temporaryCsvPath() {
-  const directory = await mkdtemp(join(tmpdir(), "sidekick-early-access-"));
-  temporaryDirectories.push(directory);
-  return join(directory, "early-access.csv");
+function createStore() {
+  const database = newDb();
+  const adapter = database.adapters.createPg();
+  const pool = new adapter.Pool() as unknown as Pool;
+  pools.push(pool);
+  return {
+    pool,
+    store: new EarlyAccessStore({ pool, baselineCount: 2_312 }),
+  };
 }
 
 const googlePlace = {
@@ -40,6 +39,8 @@ const googlePlace = {
   raw: {
     id: "ChIJ-sidekick",
     displayName: { text: "Taylor & Co. Repair", languageCode: "en" },
+    primaryType: "car_repair",
+    types: ["car_repair", "establishment"],
     editorialSummary: { text: "A family-owned repair shop." },
   },
 };
@@ -93,12 +94,9 @@ describe("early-access submission validation", () => {
   });
 });
 
-describe("CSV-backed early-access store", () => {
-  it("starts from the verified HeroNet baseline and never increments twice for one email", async () => {
-    const store = new EarlyAccessStore({
-      csvPath: await temporaryCsvPath(),
-      baselineCount: 2_312,
-    });
+describe("PostgreSQL early-access store", () => {
+  it("stores the shared counter in PostgreSQL and never increments twice for one email", async () => {
+    const { pool, store } = createStore();
     const signup = validateEarlyAccessSubmission({
       firstName: "Jamie",
       lastName: "Taylor",
@@ -114,12 +112,14 @@ describe("CSV-backed early-access store", () => {
     expect(first).toMatchObject({ created: true, signupNumber: 2_313, count: 2_313 });
     expect(duplicate).toMatchObject({ created: false, signupNumber: 2_313, count: 2_313 });
     await expect(store.getCount()).resolves.toBe(2_313);
+    const counter = await pool.query<{ current_count: number }>(
+      "SELECT current_count FROM early_access_counter WHERE singleton = TRUE",
+    );
+    expect(Number(counter.rows[0]?.current_count)).toBe(2_313);
   });
 
-  it("writes every selected Google Places field plus the raw response to CSV", async () => {
-    const csvPath = await temporaryCsvPath();
-    const sqlitePath = join(dirname(csvPath), "early-access.sqlite");
-    const store = new EarlyAccessStore({ csvPath, sqlitePath, baselineCount: 2_312 });
+  it("stores Google business categories, normalized details, and the full raw payload", async () => {
+    const { pool, store } = createStore();
 
     await store.submit(
       validateEarlyAccessSubmission({
@@ -133,26 +133,37 @@ describe("CSV-backed early-access store", () => {
       }),
     );
 
-    const csv = await readFile(csvPath, "utf8");
-    expect(csv).toContain("signup_number,created_at,first_name,last_name,email,company_name,public_display_consent,marketing_communications_consent");
-    expect(csv).toContain("google_place_id,google_display_name,google_formatted_address");
-    expect(csv).toContain("ChIJ-sidekick");
-    expect(csv).toContain("Taylor & Co. Repair");
-    expect(csv).toContain('""editorialSummary""');
+    const result = await pool.query<{
+      google_place_id: string;
+      google_primary_type: string;
+      google_types: string[];
+      google_display_name: string;
+      google_formatted_address: string;
+      google_address_components: unknown[];
+      google_raw: Record<string, unknown>;
+      marketing_communications_consent: boolean;
+    }>(`
+      SELECT google_place_id, google_primary_type, google_types,
+             google_display_name, google_formatted_address,
+             google_address_components, google_raw,
+             marketing_communications_consent
+      FROM early_access_registrations
+    `);
 
-    expect((await stat(sqlitePath)).isFile()).toBe(true);
-    const database = new DatabaseSync(sqlitePath, { readOnly: true });
-    const row = database.prepare("SELECT COUNT(*) AS count, marketing_communications_consent AS marketingConsent FROM early_access_signups").get() as { count: number; marketingConsent: number };
-    database.close();
-    expect(row.count).toBe(1);
-    expect(row.marketingConsent).toBe(1);
+    expect(result.rows[0]).toMatchObject({
+      google_place_id: "ChIJ-sidekick",
+      google_primary_type: "car_repair",
+      google_types: ["car_repair", "establishment"],
+      google_display_name: "Taylor & Co. Repair",
+      google_formatted_address: "123 Main Street, Calgary, AB T2P 1A1, Canada",
+      google_address_components: googlePlace.addressComponents,
+      google_raw: googlePlace.raw,
+      marketing_communications_consent: true,
+    });
   });
 
-  it("returns only consented real names while keeping the full aggregate count", async () => {
-    const store = new EarlyAccessStore({
-      csvPath: await temporaryCsvPath(),
-      baselineCount: 2_312,
-    });
+  it("returns only consented real names while keeping the database-backed aggregate count", async () => {
+    const { store } = createStore();
 
     await store.submit(
       validateEarlyAccessSubmission({

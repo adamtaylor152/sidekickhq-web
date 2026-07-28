@@ -1,5 +1,5 @@
-import { join } from "node:path";
 import type { APIRoute } from "astro";
+import { Pool } from "pg";
 
 import {
   EarlyAccessStore,
@@ -10,22 +10,32 @@ import { getGooglePlaceDetails, InfisicalSecretResolver } from "@/lib/google-pla
 
 export const prerender = false;
 
-const dataDirectory =
-  process.env.EARLY_ACCESS_DATA_DIR ||
-  (process.env.NODE_ENV === "production" ? "/data" : join(process.cwd(), ".data"));
-const store = new EarlyAccessStore({
-  sqlitePath: join(dataDirectory, "early-access.sqlite"),
-  csvPath: join(dataDirectory, "early-access.csv"),
-  baselineCount: VERIFIED_HERONET_BASELINE,
-});
+const databaseUrl = process.env.DATABASE_URL;
+const pool = databaseUrl
+  ? new Pool({
+      connectionString: databaseUrl,
+      max: 10,
+      connectionTimeoutMillis: 5_000,
+      idleTimeoutMillis: 30_000,
+    })
+  : null;
+const store = pool
+  ? new EarlyAccessStore({ pool, baselineCount: VERIFIED_HERONET_BASELINE })
+  : null;
 const secrets = new InfisicalSecretResolver();
 
 export const GET: APIRoute = async () => {
-  const socialProof = await store.getSocialProof();
-  return json({ ok: true, data: socialProof }, 200);
+  if (!store) return unavailable();
+  try {
+    const socialProof = await store.getSocialProof();
+    return json({ ok: true, data: socialProof }, 200);
+  } catch {
+    return unavailable();
+  }
 };
 
 export const POST: APIRoute = async ({ request }) => {
+  if (!store) return unavailable();
   try {
     const rawBody = await request.text();
     if (rawBody.length > 64 * 1024) {
@@ -46,15 +56,30 @@ export const POST: APIRoute = async ({ request }) => {
     const result = await store.submit(submission);
     return json({ ok: true, data: result }, result.created ? 201 : 200);
   } catch (error) {
-    const message =
-      error instanceof SyntaxError
-        ? "Please check the highlighted fields and try again."
-        : error instanceof Error
-          ? error.message
-          : "Early-access signup is temporarily unavailable.";
-    return json({ ok: false, error: { message } }, 400);
+    if (error instanceof SyntaxError) {
+      return json(
+        { ok: false, error: { message: "Please check the highlighted fields and try again." } },
+        400,
+      );
+    }
+    if (error instanceof Error && isSubmissionError(error.message)) {
+      return json({ ok: false, error: { message: error.message } }, 400);
+    }
+    return unavailable();
   }
 };
+
+function isSubmissionError(message: string) {
+  return message === "Please check the highlighted fields and try again." ||
+    message === "Choose a company from the suggestions.";
+}
+
+function unavailable() {
+  return json(
+    { ok: false, error: { message: "Early-access signup is temporarily unavailable." } },
+    503,
+  );
+}
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
