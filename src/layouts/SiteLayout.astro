@@ -12,10 +12,11 @@ interface Props {
   canonicalPath: string;
   theme?: "light" | "dark";
   campaign?: "early-access";
+  minimalChrome?: boolean;
   structuredData?: Record<string, unknown> | readonly Record<string, unknown>[];
 }
 
-const { title, description, canonicalPath, theme = "light", campaign, structuredData } = Astro.props;
+const { title, description, canonicalPath, theme = "light", campaign, minimalChrome = false, structuredData } = Astro.props;
 const canonical = new URL(canonicalPath, Astro.site ?? "https://sidekickhq.ca");
 const structuredDataJson = structuredData
   ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
@@ -36,10 +37,10 @@ const structuredDataJson = structuredData
   </head>
   <body>
     <SkipLink />
-    <AnnouncementBar campaign={campaign} />
-    <Header campaign={campaign} />
+    {!minimalChrome && <AnnouncementBar campaign={campaign} />}
+    {!minimalChrome && <Header campaign={campaign} />}
     <main id="main-content"><slot /></main>
-    {campaign !== "early-access" && <Footer />}
+    {!minimalChrome && campaign !== "early-access" && <Footer />}
     <script is:inline define:vars={{ priceOffers: PRICE_OFFERS }}>
       const detectCountry = () => {
         const saved = localStorage.getItem("sidekick-country");

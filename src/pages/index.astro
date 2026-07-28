@@ -11,10 +11,10 @@ const description =
     <div class="hero-orbit" aria-hidden="true"></div>
     <img
       class="hero-landscape"
-      src="/images/early-access/connected-small-business.webp"
+      src="/images/early-access/connected-business-landscape-4k.webp"
       alt="Illustrated connected landscape of small businesses, field teams, storefronts, and service work"
-      width="1600"
-      height="2071"
+      width="3840"
+      height="2160"
       fetchpriority="high"
     />
     <div class="sk-container hero-layout">
@@ -64,16 +64,17 @@ const description =
     <div class="sk-container watch-heading">
       <p class="campaign-eyebrow campaign-eyebrow--sky">See Sidekick in motion</p>
       <h2 id="watch-title">One place for the work behind the work.</h2>
-      <p>The full Sidekick film will live here. The stage is ready; the YouTube video is pending.</p>
+      <p>See how Sidekick brings the customer, operational, and financial sides of your business together.</p>
     </div>
-    <div class="sk-container video-stage" role="img" aria-label="Sidekick video coming soon">
-      <img src="/images/early-access/business-after-dark.webp" alt="Connected small businesses illuminated at night" width="1920" height="1080" loading="lazy" />
-      <div class="video-stage__veil"></div>
-      <div class="video-stage__message">
-        <span class="play-mark" aria-hidden="true">▶</span>
-        <p>YouTube video coming soon</p>
-        <small>We’ll add the final film here without changing the page.</small>
-      </div>
+    <div class="sk-container video-stage">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/2MrzTzUV6bI?rel=0"
+        title="See Sidekick in motion"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
     </div>
   </section>
 
@@ -171,7 +172,11 @@ const description =
 
   <nav class="campaign-legal" aria-label="Legal">
     <div class="sk-container campaign-legal__inner">
-      <span>© {new Date().getFullYear()} Sidekick HQ Inc.</span>
+      <span>
+        © 2026 Sidekick HQ Inc. Sidekick™, the Sidekick™ logo™, and &quot;Every side of your business. One Sidekick.™&quot;<br />
+        are Trademarks or Registered Trademarks of Sidekick Licensing LLP.<br />
+        Used Under License.
+      </span>
       <div>
         <a href="/legal/privacy">Privacy Policy</a>
         <a href="/legal/terms">Terms of Use</a>
@@ -203,6 +208,7 @@ const description =
   let selectedPlaceId = "";
   let suggestionTimer: number | undefined;
   let socialState: { count: number; people: SocialPerson[] } = { count: 2312, people: [] };
+  let proofQueue: SocialPerson[] = [];
 
   const formatCount = (count: number) => new Intl.NumberFormat("en-CA").format(count);
   const updateCount = (count: number) => {
@@ -216,6 +222,7 @@ const description =
       const body = await response.json();
       if (response.ok && body?.data) {
         socialState = body.data;
+        proofQueue = [];
         updateCount(body.data.count);
       }
     } catch {
@@ -223,11 +230,25 @@ const description =
     }
   };
 
+  const shufflePeople = (people: SocialPerson[]) => {
+    const shuffled = [...people];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const target = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[target]] = [shuffled[target]!, shuffled[index]!];
+    }
+    return shuffled;
+  };
+
+  const nextProofPerson = (people: SocialPerson[]) => {
+    if (!proofQueue.length) proofQueue = shufflePeople(people);
+    return proofQueue.shift();
+  };
+
   const showSocialProof = () => {
     if (!socialProof || !socialProofMessage) return;
     const people = Array.isArray(socialState.people) ? socialState.people : [];
     if (people.length) {
-      const person = people[Math.floor(Math.random() * people.length)]!;
+      const person = nextProofPerson(people)!;
       socialProofMessage.textContent = `${person.displayName} requested early access. They’re number ${formatCount(person.signupNumber)}.`;
     } else {
       socialProofMessage.textContent = `${formatCount(socialState.count)} small businesses have requested early access.`;
@@ -240,22 +261,22 @@ const description =
       window.setTimeout(() => {
         socialProof.hidden = true;
         socialProof.classList.remove("social-proof--visible", "social-proof--leaving");
-      }, 500);
-    }, 4_800);
+      }, 450);
+    }, 3_600);
   };
 
   let proofSequenceStarted = false;
   const startProofSequence = () => {
     if (proofSequenceStarted || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     proofSequenceStarted = true;
-    let remaining = 3 + Math.floor(Math.random() * 3);
+    let remaining = 5 + Math.floor(Math.random() * 3);
     const schedule = () => {
       if (remaining <= 0) return;
       window.setTimeout(() => {
         showSocialProof();
         remaining -= 1;
         schedule();
-      }, 7_000 + Math.floor(Math.random() * 5_000));
+      }, 4_500 + Math.floor(Math.random() * 2_500));
     };
     schedule();
   };
@@ -397,10 +418,10 @@ const description =
   :global(html) { scroll-padding-top: 7rem; }
   :global(body) { background: var(--sk-color-navy-950); }
   .early-hero { position: relative; min-height: min(55rem, calc(100svh - 6.5rem)); overflow: hidden; background: radial-gradient(circle at 18% 20%, rgb(29 98 226 / 25%), transparent 26rem), var(--sk-color-navy-950); color: white; isolation: isolate; }
-  .early-hero::before { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--sk-color-navy-950) 0%, rgb(3 13 34 / 98%) 35%, rgb(3 13 34 / 82%) 48%, rgb(3 13 34 / 35%) 64%, transparent 78%); content: ""; pointer-events: none; }
+  .early-hero::before { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--sk-color-navy-950) 0%, rgb(3 13 34 / 98%) 31%, rgb(3 13 34 / 80%) 46%, rgb(3 13 34 / 28%) 66%, transparent 82%); content: ""; pointer-events: none; }
   .early-hero::after { position: absolute; inset: auto 0 0; z-index: -1; height: 22%; background: linear-gradient(to top, var(--sk-color-navy-950), transparent); content: ""; }
   .hero-orbit { position: absolute; top: -18rem; left: 38%; z-index: -3; width: 54rem; height: 54rem; border: 1px solid rgb(130 189 255 / 20%); border-radius: 50%; }
-  .hero-landscape { position: absolute; z-index: -2; top: -8%; right: max(-8rem, calc((100vw - 96rem) / 2 - 5rem)); width: min(58vw, 52rem); height: 112%; object-fit: cover; object-position: 50% 58%; filter: saturate(1.04) contrast(1.03); -webkit-mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 40%) 16%, black 36%, black 86%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 40%) 16%, black 36%, black 86%, transparent 100%); }
+  .hero-landscape { position: absolute; z-index: -2; top: -9%; right: clamp(-28rem, calc((100vw - 90rem) / -3), -10rem); width: max(76vw, 104rem); height: 118%; object-fit: cover; object-position: 48% 55%; filter: saturate(1.04) contrast(1.04); -webkit-mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 42%) 14%, black 31%, black 100%); mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 42%) 14%, black 31%, black 100%); }
   .hero-layout { display: grid; min-height: inherit; grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr); align-items: center; gap: 4rem; padding-block: clamp(5rem, 9vw, 8rem); }
   .hero-copy { max-width: 48rem; }
   .campaign-eyebrow { margin-bottom: 1.4rem; color: #78ded3; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
@@ -429,12 +450,7 @@ const description =
   .watch-heading .campaign-eyebrow { grid-column: 1 / -1; margin-bottom: -1rem; }
   .watch-heading > p:last-child { color: rgb(255 255 255 / 62%); }
   .video-stage { position: relative; aspect-ratio: 16 / 9; margin-top: clamp(3rem, 6vw, 5rem); overflow: hidden; border: 1px solid rgb(255 255 255 / 13%); border-radius: clamp(1rem, 2vw, 2rem); box-shadow: 0 2.5rem 8rem rgb(0 0 0 / 35%); }
-  .video-stage > img { width: 100%; height: 100%; object-fit: cover; }
-  .video-stage__veil { position: absolute; inset: 0; background: linear-gradient(135deg, rgb(3 13 34 / 42%), rgb(3 13 34 / 72%)); }
-  .video-stage__message { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; padding: 2rem; text-align: center; }
-  .video-stage__message p { margin-top: 1.2rem; font-family: var(--sk-font-heading); font-size: clamp(1.5rem, 3vw, 2.8rem); font-weight: 600; letter-spacing: -0.035em; }
-  .video-stage__message small { margin-top: 0.55rem; color: rgb(255 255 255 / 58%); }
-  .play-mark { display: grid; width: 4.8rem; height: 4.8rem; place-items: center; border: 1px solid rgb(255 255 255 / 45%); border-radius: 50%; background: rgb(255 255 255 / 10%); backdrop-filter: blur(1rem); }
+  .video-stage iframe { width: 100%; height: 100%; border: 0; }
   .invite-section { padding-block: clamp(5rem, 9vw, 9rem); background: var(--sk-color-paper); color: var(--sk-color-ink); }
   .invite-shell { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(28rem, 1.15fr); overflow: hidden; border: 1px solid #cbd6e3; border-radius: 2rem; background: white; box-shadow: var(--sk-shadow-soft); }
   .invite-copy { padding: clamp(2.25rem, 5vw, 5rem); background: var(--sk-color-navy-950); color: white; }

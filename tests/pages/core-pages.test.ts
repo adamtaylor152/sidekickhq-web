@@ -23,7 +23,8 @@ describe("core marketing pages", () => {
     const homepage = source(routes[0]);
     expect(homepage).toContain("Sidekick - CRM & ERP for Small Business");
     expect(homepage).toContain("Request Early Invite");
-    expect(homepage).toContain("YouTube video coming soon");
+    expect(homepage).toContain("youtube-nocookie.com/embed/2MrzTzUV6bI");
+    expect(homepage).not.toContain("YouTube video coming soon");
     expect(homepage).toContain("/api/early-access");
     expect(homepage).toContain("/api/places/autocomplete");
   });

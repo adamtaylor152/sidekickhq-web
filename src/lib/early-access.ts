@@ -149,16 +149,20 @@ export class EarlyAccessStore {
         FROM early_access_registrations
         WHERE public_display_consent = TRUE
         ORDER BY signup_number DESC
-        LIMIT 50
+        LIMIT 500
       `),
     ]);
-    return {
-      count,
-      people: registrations.rows.map((record) => ({
+    const people = registrations.rows
+      .map((record) => ({
         displayName: `${record.first_name} ${record.last_name.slice(0, 1).toUpperCase()}.`,
         signupNumber: Number(record.signup_number),
         createdAt: toIsoString(record.created_at),
-      })),
+      }))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 50);
+    return {
+      count,
+      people,
     };
   }
 

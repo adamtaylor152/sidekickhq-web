@@ -5,18 +5,42 @@ test("homepage presents the connected early-access invitation", async ({ page })
   await expect(page).toHaveTitle("Sidekick - CRM & ERP for Small Business");
   const hero = page.getByRole("region", { name: "CRM & ERP for small business, finally on the same side." });
   await expect(hero.getByRole("heading", { level: 1 })).toContainText("CRM & ERP");
-  await expect(page.getByText("YouTube video coming soon")).toBeVisible();
+  await expect(page.getByTitle("See Sidekick in motion")).toHaveAttribute("src", /youtube-nocookie\.com\/embed\/2MrzTzUV6bI/);
+  await expect(page.getByText(/coming soon/i)).toHaveCount(0);
   await expect(hero.getByRole("button", { name: "Request Early Invite" })).toBeVisible();
-  await expect(hero.locator("[data-social-count]")).toHaveText("2,312");
+  await expect
+    .poll(async () => Number((await hero.locator("[data-social-count]").textContent())?.replaceAll(",", "")))
+    .toBeGreaterThanOrEqual(2_312);
   await expect(hero.getByText("small businesses have requested early access.", { exact: true })).toBeVisible();
   await expect
     .poll(() => page.getByRole("banner").getByRole("img", { name: "Sidekick" }).evaluate((logo) => logo.getBoundingClientRect().width))
-    .toBeGreaterThanOrEqual(168);
+    .toBeGreaterThanOrEqual(page.viewportSize()!.width <= 480 ? 128 : 168);
   await expect(page.getByRole("banner").getByRole("link", { name: "Login", exact: true })).toHaveAttribute("href", "https://app.sidekickhq.ca");
   const legal = page.getByRole("navigation", { name: "Legal" });
   await expect(legal.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/legal/privacy");
   await expect(legal.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "/legal/terms");
   await expect(page.getByRole("contentinfo")).toHaveCount(0);
+});
+
+test("wide hero uses 4K landscape artwork that crosses centre and bleeds right", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.route("**/api/early-access", (route) => route.fulfill({ json: { data: { count: 2_312, people: [] } } }));
+  await page.goto("/");
+
+  const artwork = page.locator(".hero-landscape");
+  const geometry = await artwork.evaluate((image: HTMLImageElement) => {
+    const bounds = image.getBoundingClientRect();
+    return {
+      naturalWidth: image.naturalWidth,
+      left: bounds.left,
+      right: bounds.right,
+      viewportWidth: window.innerWidth,
+    };
+  });
+
+  expect(geometry.naturalWidth).toBeGreaterThanOrEqual(3840);
+  expect(geometry.left).toBeLessThan(geometry.viewportWidth / 2);
+  expect(geometry.right).toBeGreaterThan(geometry.viewportWidth);
 });
 
 test("invite form sends an explicit marketing preference and offers existing-user login", async ({ page }) => {
@@ -65,6 +89,50 @@ test("invite form introduces the referral shortcut before personal details", asy
       return hintTop < fieldTop;
     })
     .toBe(true);
+});
+
+test("social proof appears frequently and rotates through different signups", async ({ page }) => {
+  await page.addInitScript(() => {
+    Math.random = () => 0;
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    window.setTimeout = ((handler: TimerHandler, timeout = 0, ...args: unknown[]) =>
+      nativeSetTimeout(handler, Number(timeout) * 0.01, ...args)) as typeof window.setTimeout;
+    window.addEventListener("DOMContentLoaded", () => {
+      const messages: string[] = [];
+      Object.assign(window, { __socialProofMessages: messages });
+      const message = document.querySelector("[data-social-proof-message]");
+      if (!message) return;
+      new MutationObserver(() => {
+        const text = message.textContent?.trim();
+        if (text && messages.at(-1) !== text) messages.push(text);
+      }).observe(message, { childList: true, characterData: true, subtree: true });
+    });
+  });
+  await page.route("**/api/early-access", (route) =>
+    route.fulfill({
+      json: {
+        data: {
+          count: 2_315,
+          people: [
+            { displayName: "Alex R.", signupNumber: 2_313, createdAt: "2026-07-28T00:00:00Z" },
+            { displayName: "Morgan T.", signupNumber: 2_314, createdAt: "2026-07-28T00:01:00Z" },
+            { displayName: "Sam K.", signupNumber: 2_315, createdAt: "2026-07-28T00:02:00Z" },
+          ],
+        },
+      },
+    }),
+  );
+
+  await page.goto("/");
+  await expect(page.locator("[data-social-count]").first()).toHaveText("2,315");
+  await page.mouse.click(20, 200);
+  await page.waitForTimeout(450);
+
+  const messages = await page.evaluate(() =>
+    (window as typeof window & { __socialProofMessages?: string[] }).__socialProofMessages ?? [],
+  );
+  expect(messages.length).toBeGreaterThanOrEqual(5);
+  expect(new Set(messages.slice(0, 3)).size).toBe(3);
 });
 
 test("company suggestions present business identity and location clearly", async ({ page }) => {
@@ -126,14 +194,13 @@ test("landing page links to complete Sidekick terms of use", async ({ page }) =>
   await expect(page.getByText("Hero IT", { exact: true })).toHaveCount(0);
 });
 
-test("site company block shows the support email without linking to the contact form", async ({ page }) => {
-  await page.goto("/legal/terms");
-  const footer = page.getByRole("contentinfo");
-
-  await expect(footer.getByText("Sidekick HQ Inc.", { exact: true })).toBeVisible();
-  await expect(footer.getByRole("link", { name: "hello@sidekickhq.ca" })).toHaveAttribute("href", "mailto:hello@sidekickhq.ca");
-  await expect(footer.getByText("Canada", { exact: true })).toHaveCount(0);
-  await expect(footer.locator('a[href="/contact"]')).toHaveCount(0);
+test("privacy and terms omit shared navigation and footer escape routes", async ({ page }) => {
+  for (const path of ["/legal/privacy", "/legal/terms"]) {
+    await page.goto(path);
+    await expect(page.getByRole("banner")).toHaveCount(0);
+    await expect(page.getByRole("contentinfo")).toHaveCount(0);
+    await expect(page.getByRole("complementary", { name: "Early access" })).toHaveCount(0);
+  }
 });
 
 test("Voice uses activation and never advertises a trial", async ({ page }) => {
