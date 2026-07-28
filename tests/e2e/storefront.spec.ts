@@ -48,6 +48,25 @@ test("invite form sends an explicit marketing preference and offers existing-use
   await expect(page.getByRole("link", { name: "Already granted early access?" })).toHaveAttribute("href", "https://app.sidekickhq.ca");
 });
 
+test("invite form introduces the referral shortcut before personal details", async ({ page }) => {
+  await page.route("**/api/early-access", (route) => route.fulfill({ json: { data: { count: 2_312, people: [] } } }));
+  await page.goto("/#invite");
+
+  const invite = page.getByRole("region", { name: "Put your business near the front of the line." });
+  const referralHint = invite.getByRole("note", { name: "Sidekick referral hint" });
+  const firstName = invite.getByRole("textbox", { name: "First name" });
+
+  await expect(referralHint).toContainText("Know someone who already has Sidekick access?");
+  await expect(referralHint).toContainText("Each company gets 5 invites they can share for instant access.");
+  await expect
+    .poll(async () => {
+      const hintTop = await referralHint.evaluate((element) => element.getBoundingClientRect().top);
+      const fieldTop = await firstName.evaluate((element) => element.getBoundingClientRect().top);
+      return hintTop < fieldTop;
+    })
+    .toBe(true);
+});
+
 test("company suggestions present business identity and location clearly", async ({ page }) => {
   await page.route("**/api/early-access", (route) => route.fulfill({ json: { data: { count: 2_312, people: [] } } }));
   await page.route("**/api/places/autocomplete**", (route) =>

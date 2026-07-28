@@ -94,6 +94,13 @@ const description =
 
       <div class="form-panel">
         <form data-early-access-form novalidate>
+          <aside class="referral-hint" role="note" aria-label="Sidekick referral hint">
+            <span class="referral-hint__badge" aria-hidden="true">5</span>
+            <p>
+              <strong>HINT: Know someone who already has Sidekick access?</strong>
+              <span>Each company gets 5 invites they can share for instant access.</span>
+            </p>
+          </aside>
           <div class="form-row">
             <label>
               <span>First name</span>
@@ -439,6 +446,12 @@ const description =
   .invite-copy dd { text-align: right; }
   .form-panel { min-height: 42rem; padding: clamp(2rem, 5vw, 5rem); }
   form { display: grid; gap: 1.35rem; }
+  .referral-hint { position: relative; display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: center; gap: 1rem; padding: 1rem 1.1rem; overflow: hidden; border: 1px solid rgb(47 117 237 / 22%); border-radius: 1rem; background: linear-gradient(112deg, #f0f6ff 0%, #eefcf9 100%); box-shadow: 0 0.6rem 1.8rem rgb(3 13 34 / 7%); }
+  .referral-hint::after { position: absolute; right: -1.4rem; bottom: -2.4rem; width: 7rem; height: 7rem; border: 1px solid rgb(5 168 162 / 16%); border-radius: 50%; content: ""; box-shadow: 0 0 0 1rem rgb(5 168 162 / 5%), 0 0 0 2rem rgb(5 168 162 / 3%); }
+  .referral-hint__badge { position: relative; z-index: 1; display: grid; width: 3rem; height: 3rem; place-items: center; border-radius: 0.85rem; background: linear-gradient(145deg, var(--sk-color-blue-600), #18a8a0); box-shadow: 0 0.45rem 1rem rgb(47 117 237 / 22%); color: white; font-family: var(--sk-font-heading); font-size: 1.2rem; font-weight: 750; }
+  .referral-hint p { position: relative; z-index: 1; display: grid; gap: 0.25rem; margin: 0; line-height: 1.35; }
+  .referral-hint strong { color: var(--sk-color-navy-950); font-size: 0.8rem; letter-spacing: -0.01em; }
+  .referral-hint p span { color: var(--sk-color-ink-muted); font-size: 0.73rem; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   label:not(.consent-field):not(.honeypot) { display: grid; gap: 0.45rem; color: var(--sk-color-ink); font-size: 0.78rem; font-weight: 650; }
   input:not([type="checkbox"]) { width: 100%; height: 3.4rem; padding: 0 0.95rem; border: 1px solid #bec9d7; border-radius: 0.7rem; background: white; color: var(--sk-color-ink); font-size: 1rem; outline: none; transition: border-color 150ms ease, box-shadow 150ms ease; }
