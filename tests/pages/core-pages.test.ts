@@ -53,4 +53,13 @@ describe("core marketing pages", () => {
     expect(layout).toContain("priceComponents");
     expect(layout).toContain("unitAmountCents");
   });
+
+  it("publishes complete social preview and search metadata", () => {
+    const layout = source("src/layouts/SiteLayout.astro");
+    expect(layout).toContain('property="og:image"');
+    expect(layout).toContain('name="twitter:card" content="summary_large_image"');
+    expect(layout).toContain('name="robots"');
+    expect(layout).toContain('name="keywords"');
+    expect(existsSync(path("public/images/social/sidekick-social-preview.jpg"))).toBe(true);
+  });
 });

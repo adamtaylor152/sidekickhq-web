@@ -13,11 +13,34 @@ interface Props {
   theme?: "light" | "dark";
   campaign?: "early-access";
   minimalChrome?: boolean;
+  keywords?: readonly string[];
+  socialImage?: string;
+  socialImageAlt?: string;
   structuredData?: Record<string, unknown> | readonly Record<string, unknown>[];
 }
 
-const { title, description, canonicalPath, theme = "light", campaign, minimalChrome = false, structuredData } = Astro.props;
+const defaultKeywords = [
+  "Sidekick",
+  "small business software",
+  "small business CRM",
+  "small business ERP",
+  "all-in-one business platform",
+  "business management software",
+];
+const {
+  title,
+  description,
+  canonicalPath,
+  theme = "light",
+  campaign,
+  minimalChrome = false,
+  keywords = defaultKeywords,
+  socialImage = "/images/social/sidekick-social-preview.jpg",
+  socialImageAlt = "Every side. One Sidekick. The all-in-one business platform.",
+  structuredData,
+} = Astro.props;
 const canonical = new URL(canonicalPath, Astro.site ?? "https://sidekickhq.ca");
+const socialImageUrl = new URL(socialImage, Astro.site ?? "https://sidekickhq.ca");
 const structuredDataJson = structuredData
   ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
   : undefined;
@@ -29,7 +52,28 @@ const structuredDataJson = structuredData
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords.join(", ")} />
+    <meta name="author" content="Sidekick HQ Inc." />
+    <meta name="application-name" content="Sidekick" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#030d22" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sidekick" />
+    <meta property="og:locale" content="en_CA" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/brand/sidekick-mark-color.svg" type="image/svg+xml" />
     <title>{title}</title>

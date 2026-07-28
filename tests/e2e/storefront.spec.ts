@@ -3,6 +3,11 @@ import { expect, test } from "@playwright/test";
 test("homepage presents the connected early-access invitation", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Sidekick - CRM & ERP for Small Business");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://sidekickhq.ca/images/social/sidekick-social-preview.jpg");
+  await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
+  await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary_large_image");
+  await expect(page.locator('meta[name="keywords"]')).toHaveAttribute("content", /CRM for small business/);
   const hero = page.getByRole("region", { name: "CRM & ERP for small business, finally on the same side." });
   await expect(hero.getByRole("heading", { level: 1 })).toContainText("CRM & ERP");
   await expect(page.getByTitle("See Sidekick in motion")).toHaveAttribute("src", /youtube-nocookie\.com\/embed\/2MrzTzUV6bI/);
