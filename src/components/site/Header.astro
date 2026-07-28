@@ -3,19 +3,39 @@ import { ACCOUNT_NAVIGATION, GLOBAL_NAVIGATION } from "@/content/navigation";
 import Button from "@/components/ui/Button.astro";
 import Icon from "@/components/ui/Icon.astro";
 import MegaMenu from "./MegaMenu.astro";
+
+interface Props {
+  campaign?: "early-access";
+}
+
+const { campaign } = Astro.props;
+const earlyAccess = campaign === "early-access";
 ---
 
-<header class="site-header">
+<header class:list={["site-header", { "site-header--campaign": earlyAccess }]}>
   <div class="sk-container header-inner">
     <a class="logo" href="/" aria-label="Sidekick home">
-      <img src="/brand/sidekick-lockup-color-dark.svg" width="194" height="50" alt="Sidekick" />
+      <img src={earlyAccess ? "/brand/sidekick-early-access-logo.svg" : "/brand/sidekick-lockup-color-dark.svg"} width="194" height="50" alt="Sidekick" />
     </a>
 
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      {GLOBAL_NAVIGATION.map((item) => item.children ? <MegaMenu item={item} /> : <a href={item.href}>{item.label}</a>)}
-    </nav>
+    {earlyAccess ? (
+      <nav class="desktop-nav campaign-nav" aria-label="Early-access navigation">
+        <a href="#story">Why Sidekick</a>
+        <a href="#watch">Watch</a>
+        <a href="#invite">Early access</a>
+      </nav>
+    ) : (
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        {GLOBAL_NAVIGATION.map((item) => item.children ? <MegaMenu item={item} /> : <a href={item.href}>{item.label}</a>)}
+      </nav>
+    )}
 
-    <div class="header-actions">
+    {earlyAccess ? (
+      <div class="header-actions campaign-actions">
+        <a class="campaign-login" href="https://app.sidekickhq.ca">Login</a>
+        <Button href="#invite" size="small">Request Early Invite</Button>
+      </div>
+    ) : <div class="header-actions">
       <button class="country" type="button" data-country-selector aria-label="Choose country and currency">
         <span aria-hidden="true">🇨🇦</span>
         <span>Canada</span>
@@ -27,9 +47,9 @@ import MegaMenu from "./MegaMenu.astro";
       </a>
       <a class="login" href={ACCOUNT_NAVIGATION[0].href}>Login</a>
       <Button href={ACCOUNT_NAVIGATION[1].href} size="small">Start Trial</Button>
-    </div>
+    </div>}
 
-    <details class="mobile-nav">
+    {!earlyAccess && <details class="mobile-nav">
       <summary aria-label="Open navigation"><Icon name="menu" size={24} /></summary>
       <div class="mobile-panel">
         <nav aria-label="Mobile navigation">
@@ -40,7 +60,7 @@ import MegaMenu from "./MegaMenu.astro";
           <Button href="/checkout" size="small">Start Trial</Button>
         </div>
       </div>
-    </details>
+    </details>}
   </div>
 </header>
 
@@ -49,9 +69,14 @@ import MegaMenu from "./MegaMenu.astro";
   .header-inner { position: relative; display: flex; align-items: center; min-height: var(--sk-header-height); gap: clamp(1rem, 2.4vw, 2.5rem); }
   .logo { flex: 0 0 auto; }
   .logo img { width: 9.8rem; height: auto; }
+  .site-header--campaign .logo img { width: 10.5rem; }
   .desktop-nav { display: flex; align-items: center; gap: var(--sk-space-2); font-size: var(--sk-text-sm); }
   .desktop-nav > a { padding: var(--sk-space-2); text-decoration: none; }
   .desktop-nav > a:hover { color: var(--sk-color-blue-300); }
+  .campaign-nav { margin-left: auto; }
+  .campaign-actions { margin-left: 0; }
+  .campaign-login { display: inline-flex; min-height: 2.65rem; align-items: center; padding: 0 0.9rem; border: 1px solid rgb(255 255 255 / 22%); border-radius: 0.7rem; color: white; font-size: var(--sk-text-sm); text-decoration: none; }
+  .campaign-login:hover { border-color: rgb(120 222 211 / 55%); background: rgb(255 255 255 / 5%); }
   .header-actions { display: flex; align-items: center; gap: var(--sk-space-3); margin-left: auto; }
   .country { display: flex; align-items: center; gap: var(--sk-space-2); padding: var(--sk-space-2); border: 0; background: transparent; color: inherit; cursor: pointer; font-size: var(--sk-text-xs); }
   .cart { position: relative; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; text-decoration: none; }
@@ -67,14 +92,19 @@ import MegaMenu from "./MegaMenu.astro";
   .mobile-actions { display: flex; align-items: center; justify-content: space-between; padding-top: var(--sk-space-5); border-top: 1px solid var(--sk-color-line-dark); }
 
   @media (max-width: 70rem) {
-    .desktop-nav { display: none; }
+    .desktop-nav:not(.campaign-nav) { display: none; }
     .header-actions .login { display: none; }
     .mobile-nav { display: block; }
   }
 
   @media (max-width: 38rem) {
-    .logo img { width: 8.6rem; }
+    .logo img { width: 7.7rem; }
+    .site-header--campaign .logo img { width: 8rem; }
     .country span:nth-child(2), .country :global(svg), .header-actions > :global(.button) { display: none; }
     .header-actions { gap: var(--sk-space-1); }
+    .campaign-nav { display: none; }
+    .campaign-actions { gap: 0.4rem; }
+    .campaign-actions > :global(.button) { display: inline-flex; padding-inline: 0.8rem; }
+    .campaign-login { min-height: 2.45rem; padding-inline: 0.65rem; }
   }
 </style>

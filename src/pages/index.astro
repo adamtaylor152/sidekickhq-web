@@ -1,54 +1,465 @@
 ---
-import AiOperatingLayer from "@/components/slices/AiOperatingLayer.astro";
-import ConversionBand from "@/components/slices/ConversionBand.astro";
-import HardwareStage from "@/components/slices/HardwareStage.astro";
-import HeroSlice from "@/components/slices/HeroSlice.astro";
-import IndustryPathways from "@/components/slices/IndustryPathways.astro";
-import ProductConstellation from "@/components/slices/ProductConstellation.astro";
-import SliceFrame from "@/components/slices/SliceFrame.astro";
-import { getProduct } from "@/content/products";
 import SiteLayout from "@/layouts/SiteLayout.astro";
 
-const platformPromise = "Every part of your business, working together—with AI built in.";
-const voice = getProduct("voice");
-const payments = getProduct("payments");
-if (!voice || !payments) throw new Error("Homepage hardware products are missing");
-
-const hero = { kind: "hero", theme: "navy", id: "home-hero" } as const;
-const constellation = { kind: "constellation", theme: "paper", id: "products" } as const;
-const workflow = { kind: "workflow", theme: "white", id: "workflows" } as const;
-const ai = { kind: "ai-layer", theme: "blue", id: "sidekick-ai" } as const;
-const voiceHardware = { kind: "hardware-stage", theme: "white", id: "real-phones" } as const;
-const paymentHardware = { kind: "hardware-stage", theme: "paper", id: "real-terminals" } as const;
-const industries = { kind: "industry-pathways", theme: "white", id: "industries" } as const;
-const conversion = { kind: "conversion", theme: "navy", id: "start" } as const;
+const title = "Sidekick - CRM & ERP for Small Business";
+const description =
+  "Sidekick connects customers, work, money, and the next action for small businesses. Request an early invite.";
 ---
 
-<SiteLayout title="Sidekick | Connected business software with AI built in" description={platformPromise} canonicalPath="/" theme="dark">
-  <HeroSlice slice={hero} />
-  <ProductConstellation slice={constellation} />
-
-  <SliceFrame slice={workflow} eyebrow="Connected by design" title="The handoffs happen inside Sidekick." body="Each product has its own depth. The customer, work, communication, money, and next action still meet on one operating record." wide>
-    <div class="handoffs">
-      <article><span>01</span><h3>Appointment-led service</h3><p>Booking → customer → reminder → service → terminal payment → finance</p></article>
-      <article><span>02</span><h3>Managed services</h3><p>Proposal → order → onboarding → PSA + RMM → recurring billing</p></article>
-      <article><span>03</span><h3>Rental and field work</h3><p>Quote → availability → staging → dispatch → return → fleet insight</p></article>
-      <article><span>04</span><h3>Retail and hospitality</h3><p>Order → customer + location → payment → inventory → settlement</p></article>
+<SiteLayout title={title} description={description} canonicalPath="/" theme="dark" campaign="early-access">
+  <section class="early-hero" aria-labelledby="early-hero-title">
+    <div class="hero-orbit" aria-hidden="true"></div>
+    <img
+      class="hero-landscape"
+      src="/images/early-access/connected-small-business.webp"
+      alt="Illustrated connected landscape of small businesses, field teams, storefronts, and service work"
+      width="1600"
+      height="2071"
+      fetchpriority="high"
+    />
+    <div class="sk-container hero-layout">
+      <div class="hero-copy">
+        <p class="campaign-eyebrow">One connected operating system</p>
+        <h1 id="early-hero-title">CRM &amp; ERP for small business, finally on the same side.</h1>
+        <p class="hero-intro">
+          Sidekick brings customers, work, money, and the next action together—so your team can run the business instead of stitching systems together.
+        </p>
+        <div class="hero-actions">
+          <button class="campaign-button campaign-button--primary" type="button" data-scroll-to-invite>
+            Request Early Invite
+            <span aria-hidden="true">→</span>
+          </button>
+          <a class="campaign-button campaign-button--quiet" href="#watch">Watch the story</a>
+        </div>
+        <div class="request-count" aria-live="polite">
+          <span class="request-count__number" data-social-count>2,312</span>
+          <span>small businesses have requested early access.</span>
+        </div>
+      </div>
     </div>
-  </SliceFrame>
+  </section>
 
-  <AiOperatingLayer slice={ai} />
-  <HardwareStage slice={voiceHardware} product={voice} />
-  <HardwareStage slice={paymentHardware} product={payments} />
-  <IndustryPathways slice={industries} />
-  <ConversionBand slice={conversion} />
+  <section id="story" class="story-section" aria-labelledby="story-title">
+    <div class="sk-container story-grid">
+      <div>
+        <p class="campaign-eyebrow campaign-eyebrow--ink">Why Sidekick</p>
+        <h2 id="story-title">The handoffs should happen inside your system.</h2>
+      </div>
+      <p>
+        An inquiry becomes a customer. A quote becomes scheduled work. Completed work becomes an invoice. Payment updates the books. Sidekick keeps those handoffs connected on one operating record.
+      </p>
+    </div>
+    <div class="sk-container flow-rail" aria-label="Connected Sidekick workflow">
+      <article><span>Customer</span><strong>Know who needs what.</strong></article>
+      <div aria-hidden="true">→</div>
+      <article><span>Work</span><strong>Move the next action.</strong></article>
+      <div aria-hidden="true">→</div>
+      <article><span>Money</span><strong>Keep every dollar in context.</strong></article>
+      <div aria-hidden="true">→</div>
+      <article><span>Insight</span><strong>See the whole business.</strong></article>
+    </div>
+  </section>
+
+  <section id="watch" class="watch-section" aria-labelledby="watch-title">
+    <div class="sk-container watch-heading">
+      <p class="campaign-eyebrow campaign-eyebrow--sky">See Sidekick in motion</p>
+      <h2 id="watch-title">One place for the work behind the work.</h2>
+      <p>The full Sidekick film will live here. The stage is ready; the YouTube video is pending.</p>
+    </div>
+    <div class="sk-container video-stage" role="img" aria-label="Sidekick video coming soon">
+      <img src="/images/early-access/business-after-dark.webp" alt="Connected small businesses illuminated at night" width="1920" height="1080" loading="lazy" />
+      <div class="video-stage__veil"></div>
+      <div class="video-stage__message">
+        <span class="play-mark" aria-hidden="true">▶</span>
+        <p>YouTube video coming soon</p>
+        <small>We’ll add the final film here without changing the page.</small>
+      </div>
+    </div>
+  </section>
+
+  <section id="invite" class="invite-section" aria-labelledby="invite-title">
+    <div class="sk-container invite-shell">
+      <div class="invite-copy">
+        <p class="campaign-eyebrow campaign-eyebrow--sky">Founding access</p>
+        <h2 id="invite-title">Put your business near the front of the line.</h2>
+        <p>
+          Tell us who you are and where you work. We’ll use this information only to manage Sidekick early access and future launch communication.
+        </p>
+        <dl>
+          <div><dt>Markets</dt><dd>Canada &amp; United States</dd></div>
+          <div><dt>Current list</dt><dd><span data-social-count>2,312</span> businesses</dd></div>
+          <div><dt>Cost today</dt><dd>No charge to request access</dd></div>
+        </dl>
+      </div>
+
+      <div class="form-panel">
+        <form data-early-access-form novalidate>
+          <div class="form-row">
+            <label>
+              <span>First name</span>
+              <input name="firstName" autocomplete="given-name" required maxlength="80" />
+            </label>
+            <label>
+              <span>Last name</span>
+              <input name="lastName" autocomplete="family-name" required maxlength="80" />
+            </label>
+          </div>
+          <label>
+            <span>Email address</span>
+            <input name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" />
+          </label>
+          <label class="company-field">
+            <span>Company</span>
+            <input
+              name="companyName"
+              autocomplete="organization"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="company-suggestions"
+              required
+              maxlength="300"
+              data-company-input
+            />
+            <small data-company-help>Start typing and choose your company, or enter it manually.</small>
+            <ul id="company-suggestions" class="company-suggestions" role="listbox" hidden data-company-suggestions></ul>
+          </label>
+          <label class="consent-field">
+            <input name="publicDisplayConsent" type="checkbox" checked />
+            <span>
+              You may show my first name and last initial in the early-access activity box. I can opt out now or request removal later.
+            </span>
+          </label>
+          <label class="consent-field">
+            <input name="marketingCommunicationsConsent" type="checkbox" />
+            <span>
+              I agree to receive Sidekick launch news and marketing communications. I can unsubscribe at any time.
+            </span>
+          </label>
+          <label class="honeypot" aria-hidden="true">
+            <span>Website</span>
+            <input name="website" tabindex="-1" autocomplete="off" />
+          </label>
+          <p class="form-legal">
+            By requesting access, you agree that Sidekick HQ Inc. may store this information to manage the waitlist. Marketing consent is optional. See our <a href="/legal/privacy">Privacy Policy</a>.
+          </p>
+          <button class="campaign-button campaign-button--submit" type="submit">
+            <span data-submit-label>Request Early Invite</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+        </form>
+        <div class="success-panel" hidden data-success-panel>
+          <p class="campaign-eyebrow campaign-eyebrow--ink">You’re on the list</p>
+          <h3>Your early-access number is <span data-success-number></span>.</h3>
+          <p>We’ve saved your request. There’s nothing else you need to do today.</p>
+        </div>
+        <a class="existing-access" href="https://app.sidekickhq.ca">
+          <span>Already granted early access?</span>
+          <strong>Log in →</strong>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="campaign-legal" aria-label="Legal">
+    <div class="sk-container campaign-legal__inner">
+      <span>© {new Date().getFullYear()} Sidekick HQ Inc.</span>
+      <div>
+        <a href="/legal/privacy">Privacy Policy</a>
+        <a href="/legal/terms">Terms of Use</a>
+      </div>
+    </div>
+  </nav>
+
+  <aside class="social-proof" aria-live="polite" aria-atomic="true" hidden data-social-proof>
+    <span class="social-proof__mark" aria-hidden="true">K</span>
+    <p data-social-proof-message>2,312 small businesses have requested early access.</p>
+  </aside>
 </SiteLayout>
 
+<script>
+  type SocialPerson = { displayName: string; signupNumber: number; createdAt: string };
+  type CompanySuggestion = { placeId: string; fullText: string; primaryText: string; secondaryText: string | null };
+  const form = document.querySelector<HTMLFormElement>("[data-early-access-form]")!;
+  const companyInput = document.querySelector<HTMLInputElement>("[data-company-input]")!;
+  const companyHelp = document.querySelector<HTMLElement>("[data-company-help]")!;
+  const suggestionsList = document.querySelector<HTMLUListElement>("[data-company-suggestions]")!;
+  const formStatus = document.querySelector<HTMLElement>("[data-form-status]")!;
+  const successPanel = document.querySelector<HTMLElement>("[data-success-panel]")!;
+  const successNumber = document.querySelector<HTMLElement>("[data-success-number]")!;
+  const socialProof = document.querySelector<HTMLElement>("[data-social-proof]")!;
+  const socialProofMessage = document.querySelector<HTMLElement>("[data-social-proof-message]")!;
+  const countNodes = document.querySelectorAll<HTMLElement>("[data-social-count]");
+  const submitLabel = document.querySelector<HTMLElement>("[data-submit-label]")!;
+  const sessionToken = crypto.randomUUID();
+  let selectedPlaceId = "";
+  let suggestionTimer: number | undefined;
+  let socialState: { count: number; people: SocialPerson[] } = { count: 2312, people: [] };
+
+  const formatCount = (count: number) => new Intl.NumberFormat("en-CA").format(count);
+  const updateCount = (count: number) => {
+    socialState.count = count;
+    countNodes.forEach((node) => { node.textContent = formatCount(count); });
+  };
+
+  const refreshSocialProof = async () => {
+    try {
+      const response = await fetch("/api/early-access", { headers: { accept: "application/json" } });
+      const body = await response.json();
+      if (response.ok && body?.data) {
+        socialState = body.data;
+        updateCount(body.data.count);
+      }
+    } catch {
+      // The verified baseline remains visible if the live count cannot load.
+    }
+  };
+
+  const showSocialProof = () => {
+    if (!socialProof || !socialProofMessage) return;
+    const people = Array.isArray(socialState.people) ? socialState.people : [];
+    if (people.length) {
+      const person = people[Math.floor(Math.random() * people.length)]!;
+      socialProofMessage.textContent = `${person.displayName} requested early access. They’re number ${formatCount(person.signupNumber)}.`;
+    } else {
+      socialProofMessage.textContent = `${formatCount(socialState.count)} small businesses have requested early access.`;
+    }
+    socialProof.hidden = false;
+    socialProof.classList.remove("social-proof--leaving");
+    socialProof.classList.add("social-proof--visible");
+    window.setTimeout(() => {
+      socialProof.classList.add("social-proof--leaving");
+      window.setTimeout(() => {
+        socialProof.hidden = true;
+        socialProof.classList.remove("social-proof--visible", "social-proof--leaving");
+      }, 500);
+    }, 4_800);
+  };
+
+  let proofSequenceStarted = false;
+  const startProofSequence = () => {
+    if (proofSequenceStarted || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    proofSequenceStarted = true;
+    let remaining = 3 + Math.floor(Math.random() * 3);
+    const schedule = () => {
+      if (remaining <= 0) return;
+      window.setTimeout(() => {
+        showSocialProof();
+        remaining -= 1;
+        schedule();
+      }, 7_000 + Math.floor(Math.random() * 5_000));
+    };
+    schedule();
+  };
+  ["pointerdown", "keydown", "scroll"].forEach((eventName) =>
+    window.addEventListener(eventName, startProofSequence, { once: true, passive: true }),
+  );
+
+  document.querySelectorAll("[data-scroll-to-invite]").forEach((button) =>
+    button.addEventListener("click", () => {
+      const inviteSection = document.querySelector<HTMLElement>("#invite");
+      if (inviteSection) {
+        window.scrollTo({
+          top: window.scrollY + inviteSection.getBoundingClientRect().top - 96,
+          behavior: "smooth",
+        });
+      }
+      window.setTimeout(() => document.querySelector<HTMLInputElement>('[name="firstName"]')?.focus(), 550);
+    }),
+  );
+
+  const closeSuggestions = () => {
+    if (!suggestionsList || !companyInput) return;
+    suggestionsList.hidden = true;
+    suggestionsList.replaceChildren();
+    companyInput.setAttribute("aria-expanded", "false");
+  };
+
+  const renderSuggestions = (suggestions: CompanySuggestion[]) => {
+    if (!suggestionsList || !companyInput) return;
+    suggestionsList.replaceChildren();
+    suggestions.forEach((suggestion) => {
+      const item = document.createElement("li");
+      item.setAttribute("role", "option");
+      const button = document.createElement("button");
+      button.type = "button";
+      const primary = document.createElement("strong");
+      primary.textContent = suggestion.primaryText;
+      const secondary = document.createElement("span");
+      secondary.textContent = suggestion.secondaryText || suggestion.fullText;
+      button.append(primary, secondary);
+      button.addEventListener("click", () => {
+        selectedPlaceId = suggestion.placeId;
+        companyInput.value = suggestion.primaryText;
+        companyHelp.textContent = suggestion.fullText;
+        closeSuggestions();
+      });
+      item.append(button);
+      suggestionsList.append(item);
+    });
+    suggestionsList.hidden = suggestions.length === 0;
+    companyInput.setAttribute("aria-expanded", String(suggestions.length > 0));
+  };
+
+  companyInput.addEventListener("input", () => {
+    selectedPlaceId = "";
+    companyHelp.textContent = "Start typing and choose your company, or enter it manually.";
+    window.clearTimeout(suggestionTimer);
+    const input = companyInput.value.trim();
+    if (input.length < 2) return closeSuggestions();
+    suggestionTimer = window.setTimeout(async () => {
+      try {
+        const query = new URLSearchParams({ input, sessionToken });
+        const response = await fetch(`/api/places/autocomplete?${query}`, { headers: { accept: "application/json" } });
+        const body = await response.json();
+        if (!response.ok) throw new Error(body?.error?.message);
+        renderSuggestions(body?.data?.suggestions || []);
+      } catch {
+        closeSuggestions();
+        companyHelp.textContent = "Company lookup is unavailable right now. Enter the company name manually.";
+      }
+    }, 280);
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest(".company-field")) closeSuggestions();
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const fields = new FormData(form);
+    submitButton.disabled = true;
+    submitLabel.textContent = "Saving your place…";
+    formStatus.textContent = "";
+    try {
+      const response = await fetch("/api/early-access", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          firstName: fields.get("firstName"),
+          lastName: fields.get("lastName"),
+          email: fields.get("email"),
+          companyName: fields.get("companyName"),
+          publicDisplayConsent: fields.get("publicDisplayConsent") === "on",
+          marketingCommunicationsConsent: fields.get("marketingCommunicationsConsent") === "on",
+          website: fields.get("website"),
+          googlePlaceId: selectedPlaceId,
+          googleSessionToken: sessionToken,
+        }),
+      });
+      const body = await response.json();
+      if (!response.ok || !body?.data) throw new Error(body?.error?.message || "We couldn’t save your request.");
+      updateCount(body.data.count);
+      successNumber.textContent = formatCount(body.data.signupNumber);
+      form.hidden = true;
+      successPanel.hidden = false;
+      await refreshSocialProof();
+      showSocialProof();
+    } catch (error) {
+      formStatus.textContent = error instanceof Error ? error.message : "We couldn’t save your request. Please try again.";
+      submitButton.disabled = false;
+      submitLabel.textContent = "Request Early Invite";
+    }
+  });
+
+  refreshSocialProof();
+</script>
+
 <style>
-  .handoffs { border-top: 1px solid var(--sk-color-line); }
-  article { display: grid; grid-template-columns: 3rem minmax(12rem, 0.55fr) minmax(20rem, 1.45fr); gap: var(--sk-space-6); align-items: center; min-height: 7.2rem; border-bottom: 1px solid var(--sk-color-line); }
-  article span { color: var(--sk-color-blue-500); font-family: var(--sk-font-mono); font-size: var(--sk-text-xs); }
-  article h3 { font-size: var(--sk-text-lg); }
-  article p { color: var(--sk-color-ink-muted); }
-  @media (max-width: 48rem) { article { grid-template-columns: 2rem 1fr; padding-block: var(--sk-space-5); } article p { grid-column: 2; } }
+  :global(html) { scroll-padding-top: 7rem; }
+  :global(body) { background: var(--sk-color-navy-950); }
+  .early-hero { position: relative; min-height: min(55rem, calc(100svh - 6.5rem)); overflow: hidden; background: radial-gradient(circle at 18% 20%, rgb(29 98 226 / 25%), transparent 26rem), var(--sk-color-navy-950); color: white; isolation: isolate; }
+  .early-hero::before { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, var(--sk-color-navy-950) 0%, rgb(3 13 34 / 98%) 35%, rgb(3 13 34 / 82%) 48%, rgb(3 13 34 / 35%) 64%, transparent 78%); content: ""; pointer-events: none; }
+  .early-hero::after { position: absolute; inset: auto 0 0; z-index: -1; height: 22%; background: linear-gradient(to top, var(--sk-color-navy-950), transparent); content: ""; }
+  .hero-orbit { position: absolute; top: -18rem; left: 38%; z-index: -3; width: 54rem; height: 54rem; border: 1px solid rgb(130 189 255 / 20%); border-radius: 50%; }
+  .hero-landscape { position: absolute; z-index: -2; top: -8%; right: max(-8rem, calc((100vw - 96rem) / 2 - 5rem)); width: min(58vw, 52rem); height: 112%; object-fit: cover; object-position: 50% 58%; filter: saturate(1.04) contrast(1.03); -webkit-mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 40%) 16%, black 36%, black 86%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, rgb(0 0 0 / 40%) 16%, black 36%, black 86%, transparent 100%); }
+  .hero-layout { display: grid; min-height: inherit; grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr); align-items: center; gap: 4rem; padding-block: clamp(5rem, 9vw, 8rem); }
+  .hero-copy { max-width: 48rem; }
+  .campaign-eyebrow { margin-bottom: 1.4rem; color: #78ded3; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .campaign-eyebrow--ink { color: var(--sk-color-blue-600); }
+  .campaign-eyebrow--sky { color: var(--sk-color-blue-300); }
+  h1 { max-width: 12ch; font-size: clamp(3.35rem, 6.8vw, 7.25rem); font-weight: 600; letter-spacing: -0.06em; line-height: 0.91; text-wrap: balance; }
+  .hero-intro { max-width: 39rem; margin-top: 2rem; color: rgb(255 255 255 / 75%); font-size: clamp(1.08rem, 1.6vw, 1.35rem); line-height: 1.55; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 2.25rem; }
+  .campaign-button { display: inline-flex; min-height: 3.35rem; align-items: center; justify-content: center; gap: 1rem; padding: 0.85rem 1.3rem; border: 1px solid transparent; border-radius: 0.75rem; font-weight: 650; text-decoration: none; transition: transform 180ms ease, background 180ms ease, border-color 180ms ease; }
+  .campaign-button:hover { transform: translateY(-2px); }
+  .campaign-button--primary { border: 0; background: white; color: var(--sk-color-navy-950); cursor: pointer; }
+  .campaign-button--quiet { border-color: rgb(255 255 255 / 22%); background: rgb(3 13 34 / 40%); color: white; backdrop-filter: blur(0.8rem); }
+  .request-count { display: flex; max-width: 32rem; align-items: baseline; gap: 0.65rem; margin-top: 2.5rem; padding-top: 1.1rem; border-top: 1px solid rgb(255 255 255 / 18%); color: rgb(255 255 255 / 58%); font-size: 0.85rem; }
+  .request-count__number { color: white; font-family: var(--sk-font-heading); font-size: 1.35rem; font-weight: 600; }
+  .story-section { padding-block: clamp(5rem, 9vw, 9rem); background: var(--sk-color-white); color: var(--sk-color-ink); }
+  .story-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr); align-items: end; gap: clamp(3rem, 8vw, 8rem); }
+  .story-grid h2, .watch-heading h2, .invite-copy h2 { max-width: 13ch; font-size: clamp(2.45rem, 5vw, 5.2rem); letter-spacing: -0.055em; line-height: 0.98; }
+  .story-grid > p { color: var(--sk-color-ink-muted); font-size: clamp(1.05rem, 1.4vw, 1.25rem); }
+  .flow-rail { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; gap: clamp(0.75rem, 2vw, 2rem); margin-top: clamp(4rem, 8vw, 7rem); }
+  .flow-rail article { min-height: 10rem; padding-block: 1.4rem; border-top: 1px solid var(--sk-color-line); border-bottom: 1px solid var(--sk-color-line); }
+  .flow-rail article span { display: block; margin-bottom: 2.5rem; color: var(--sk-color-blue-600); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; }
+  .flow-rail article strong { display: block; max-width: 12ch; font-family: var(--sk-font-heading); font-size: 1.1rem; line-height: 1.25; }
+  .flow-rail > div { color: var(--sk-color-blue-500); }
+  .watch-section { padding-block: clamp(5rem, 9vw, 9rem); background: var(--sk-color-navy-900); color: white; }
+  .watch-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.55fr); gap: 3rem; align-items: end; }
+  .watch-heading .campaign-eyebrow { grid-column: 1 / -1; margin-bottom: -1rem; }
+  .watch-heading > p:last-child { color: rgb(255 255 255 / 62%); }
+  .video-stage { position: relative; aspect-ratio: 16 / 9; margin-top: clamp(3rem, 6vw, 5rem); overflow: hidden; border: 1px solid rgb(255 255 255 / 13%); border-radius: clamp(1rem, 2vw, 2rem); box-shadow: 0 2.5rem 8rem rgb(0 0 0 / 35%); }
+  .video-stage > img { width: 100%; height: 100%; object-fit: cover; }
+  .video-stage__veil { position: absolute; inset: 0; background: linear-gradient(135deg, rgb(3 13 34 / 42%), rgb(3 13 34 / 72%)); }
+  .video-stage__message { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; padding: 2rem; text-align: center; }
+  .video-stage__message p { margin-top: 1.2rem; font-family: var(--sk-font-heading); font-size: clamp(1.5rem, 3vw, 2.8rem); font-weight: 600; letter-spacing: -0.035em; }
+  .video-stage__message small { margin-top: 0.55rem; color: rgb(255 255 255 / 58%); }
+  .play-mark { display: grid; width: 4.8rem; height: 4.8rem; place-items: center; border: 1px solid rgb(255 255 255 / 45%); border-radius: 50%; background: rgb(255 255 255 / 10%); backdrop-filter: blur(1rem); }
+  .invite-section { padding-block: clamp(5rem, 9vw, 9rem); background: var(--sk-color-paper); color: var(--sk-color-ink); }
+  .invite-shell { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(28rem, 1.15fr); overflow: hidden; border: 1px solid #cbd6e3; border-radius: 2rem; background: white; box-shadow: var(--sk-shadow-soft); }
+  .invite-copy { padding: clamp(2.25rem, 5vw, 5rem); background: var(--sk-color-navy-950); color: white; }
+  .invite-copy h2 { max-width: 10ch; }
+  .invite-copy > p:not(.campaign-eyebrow) { max-width: 33rem; margin-top: 2rem; color: rgb(255 255 255 / 65%); }
+  .invite-copy dl { display: grid; gap: 1rem; margin-top: 3.5rem; }
+  .invite-copy dl > div { display: flex; justify-content: space-between; gap: 2rem; padding-top: 0.8rem; border-top: 1px solid rgb(255 255 255 / 15%); font-size: 0.8rem; }
+  .invite-copy dt { color: rgb(255 255 255 / 45%); }
+  .invite-copy dd { text-align: right; }
+  .form-panel { min-height: 42rem; padding: clamp(2rem, 5vw, 5rem); }
+  form { display: grid; gap: 1.35rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  label:not(.consent-field):not(.honeypot) { display: grid; gap: 0.45rem; color: var(--sk-color-ink); font-size: 0.78rem; font-weight: 650; }
+  input:not([type="checkbox"]) { width: 100%; height: 3.4rem; padding: 0 0.95rem; border: 1px solid #bec9d7; border-radius: 0.7rem; background: white; color: var(--sk-color-ink); font-size: 1rem; outline: none; transition: border-color 150ms ease, box-shadow 150ms ease; }
+  input:not([type="checkbox"]):focus { border-color: var(--sk-color-blue-500); box-shadow: 0 0 0 0.22rem rgb(47 117 237 / 15%); }
+  .company-field { position: relative; }
+  .company-field small { color: var(--sk-color-ink-muted); font-size: 0.72rem; font-weight: 400; }
+  .company-suggestions { position: absolute; top: 5rem; right: 0; left: 0; z-index: 5; max-height: 18rem; padding: 0.45rem; overflow-y: auto; border: 1px solid #bec9d7; border-radius: 0.85rem; background: white; box-shadow: 0 1.2rem 3rem rgb(3 13 34 / 16%); list-style: none; }
+  .company-suggestions button { display: grid; width: 100%; gap: 0.15rem; padding: 0.8rem; border: 0; border-radius: 0.55rem; background: transparent; text-align: left; cursor: pointer; }
+  .company-suggestions button:hover, .company-suggestions button:focus-visible { background: var(--sk-color-blue-100); }
+  .company-suggestions strong { font-size: 0.86rem; }
+  .company-suggestions span { color: var(--sk-color-ink-muted); font-size: 0.72rem; }
+  .consent-field { display: grid; grid-template-columns: 1.1rem 1fr; gap: 0.75rem; align-items: start; color: var(--sk-color-ink-muted); font-size: 0.75rem; line-height: 1.5; cursor: pointer; }
+  .consent-field input { width: 1rem; height: 1rem; margin-top: 0.16rem; accent-color: var(--sk-color-blue-600); }
+  .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .form-legal { color: var(--sk-color-ink-muted); font-size: 0.72rem; line-height: 1.55; }
+  .campaign-button--submit { width: 100%; border: 0; background: var(--sk-color-blue-600); color: white; cursor: pointer; }
+  .campaign-button--submit:disabled { cursor: wait; opacity: 0.66; transform: none; }
+  .form-status { min-height: 1.5rem; color: var(--sk-color-danger-text); font-size: 0.8rem; }
+  .existing-access { position: relative; display: flex; min-height: 4.25rem; align-items: center; justify-content: space-between; gap: 1.5rem; margin-top: 1.5rem; padding: 1rem 1.2rem; overflow: hidden; border: 1px solid rgb(120 222 211 / 20%); border-radius: 0.85rem; background: radial-gradient(circle at 12% 140%, rgb(5 168 162 / 28%), transparent 46%), repeating-linear-gradient(135deg, transparent 0 18px, rgb(255 255 255 / 3%) 18px 19px), var(--sk-color-navy-950); color: white; text-decoration: none; transition: border-color 180ms ease, transform 180ms ease; }
+  .existing-access:hover { border-color: rgb(120 222 211 / 55%); transform: translateY(-2px); }
+  .existing-access span { position: relative; color: rgb(255 255 255 / 68%); font-size: 0.78rem; }
+  .existing-access strong { position: relative; font-size: 0.82rem; white-space: nowrap; }
+  .success-panel { align-content: center; min-height: 30rem; }
+  .success-panel h3 { max-width: 12ch; font-size: clamp(2.3rem, 4vw, 4.5rem); letter-spacing: -0.055em; line-height: 1; }
+  .success-panel > p:last-child { max-width: 29rem; margin-top: 1.5rem; color: var(--sk-color-ink-muted); }
+  .campaign-legal { border-top: 1px solid rgb(255 255 255 / 12%); background: var(--sk-color-navy-950); color: rgb(255 255 255 / 52%); }
+  .campaign-legal__inner { display: flex; min-height: 5.5rem; align-items: center; justify-content: space-between; gap: 2rem; font-size: 0.76rem; }
+  .campaign-legal__inner div { display: flex; gap: 1.5rem; }
+  .campaign-legal a { color: rgb(255 255 255 / 76%); text-underline-offset: 0.22em; }
+  .campaign-legal a:hover { color: white; }
+  .social-proof { position: fixed; bottom: 1.4rem; left: 1.4rem; z-index: 100; display: grid; width: min(25rem, calc(100vw - 2.8rem)); grid-template-columns: 2.65rem 1fr; gap: 0.9rem; align-items: center; padding: 0.9rem 1rem; border: 1px solid rgb(255 255 255 / 18%); border-radius: 1rem; background: rgb(3 13 34 / 94%); color: white; box-shadow: 0 1.2rem 4rem rgb(0 0 0 / 28%); backdrop-filter: blur(1rem); opacity: 0; transform: translateY(1rem); }
+  .social-proof--visible { animation: proof-in 480ms var(--sk-ease-emphasized) forwards; }
+  .social-proof--leaving { animation: proof-out 460ms ease forwards; }
+  .social-proof__mark { display: grid; width: 2.65rem; height: 2.65rem; place-items: center; border-radius: 0.7rem; background: linear-gradient(145deg, #05a8a2, #054989); font-family: var(--sk-font-heading); font-weight: 700; }
+  .social-proof p { font-size: 0.78rem; line-height: 1.45; text-wrap: pretty; }
+  @keyframes proof-in { to { opacity: 1; transform: translateY(0); } }
+  @keyframes proof-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(0.6rem); } }
+  @media (max-width: 64rem) { .early-hero::before { background: linear-gradient(90deg, var(--sk-color-navy-950) 0%, rgb(3 13 34 / 92%) 42%, rgb(3 13 34 / 45%) 70%, transparent 100%); } .hero-layout { grid-template-columns: 1fr; } .hero-copy { max-width: 42rem; } .hero-landscape { right: -15rem; width: 60rem; opacity: 0.52; } .invite-shell { grid-template-columns: 1fr; } .invite-copy h2 { max-width: 13ch; } }
+  @media (max-width: 48rem) { .early-hero { min-height: auto; } .early-hero::before { background: linear-gradient(180deg, rgb(3 13 34 / 20%) 0%, rgb(3 13 34 / 55%) 66%, var(--sk-color-navy-950) 100%), linear-gradient(90deg, var(--sk-color-navy-950) 0%, rgb(3 13 34 / 78%) 54%, rgb(3 13 34 / 25%) 100%); } .hero-layout { padding-block: 5rem 6rem; } .hero-landscape { top: 10%; right: -17rem; width: 46rem; height: 95%; opacity: 0.36; } h1 { max-width: 10ch; font-size: clamp(3.2rem, 14vw, 5.4rem); } .story-grid, .watch-heading { grid-template-columns: 1fr; align-items: start; } .flow-rail { grid-template-columns: 1fr 1fr; } .flow-rail > div { display: none; } .form-row { grid-template-columns: 1fr; } }
+  @media (max-width: 34rem) { .hero-actions { display: grid; } .request-count { align-items: flex-start; flex-direction: column; } .flow-rail { grid-template-columns: 1fr; } .invite-shell { width: 100%; border-inline: 0; border-radius: 0; } .invite-section .sk-container { width: 100%; } .campaign-legal__inner { min-height: 7rem; align-items: flex-start; flex-direction: column; justify-content: center; gap: 0.75rem; } .social-proof { bottom: 0.8rem; left: 0.8rem; width: calc(100vw - 1.6rem); } }
+  @media (prefers-reduced-motion: reduce) { .campaign-button { transition: none; } .campaign-button:hover { transform: none; } .social-proof { animation: none; } }
 </style>

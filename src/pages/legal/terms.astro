@@ -1,0 +1,145 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+const address = "888 3rd St SW, Suite 1000, Calgary, AB T2P 5C5";
+const sections = [
+  { id: "about", title: "About the Site" },
+  { id: "service-agreement", title: "No Service Agreement Created by Website Alone" },
+  { id: "accuracy", title: "Accuracy and Informational Nature of Content" },
+  { id: "permitted-use", title: "Permitted Use" },
+  { id: "intellectual-property", title: "Intellectual Property" },
+  { id: "third-parties", title: "Third-Party Tools, Platforms, and Links" },
+  { id: "submissions", title: "User Submissions" },
+  { id: "availability", title: "Availability and Security" },
+  { id: "warranties", title: "Disclaimer of Warranties" },
+  { id: "liability", title: "Limitation of Liability" },
+  { id: "indemnity", title: "Indemnity" },
+  { id: "privacy", title: "Privacy" },
+  { id: "changes", title: "Changes to the Site or Terms" },
+  { id: "governing-law", title: "Governing Law" },
+  { id: "contact", title: "Contact" },
+] as const;
+---
+
+<SiteLayout
+  title="Terms of Use | Sidekick HQ Inc."
+  description="Terms governing access to and use of the Sidekick HQ Inc. website."
+  canonicalPath="/legal/terms"
+  theme="dark"
+>
+  <header class="terms-hero">
+    <div class="terms-orbit" aria-hidden="true"></div>
+    <div class="sk-container terms-hero__layout">
+      <div>
+        <a class="back-link" href="/">← Back to Sidekick</a>
+        <p class="terms-eyebrow">Legal · Website use</p>
+        <h1>Terms of Use</h1>
+        <p class="terms-intro">
+          These terms govern access to and use of sidekickhq.ca. By using the site, you agree to these Terms of Use. If you do not agree, do not use the site.
+        </p>
+      </div>
+      <dl class="terms-meta">
+        <div><dt>Effective date</dt><dd>July 27, 2026</dd></div>
+        <div><dt>Operator</dt><dd>Sidekick HQ Inc.</dd></div>
+        <div><dt>Office</dt><dd>{address}</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <div class="terms-surface">
+    <div class="sk-container terms-layout">
+      <aside class="terms-index">
+        <p>Contents</p>
+        <nav aria-label="Terms of use contents">
+          <ol>
+            {sections.map((section, index) => (
+              <li><a href={`#${section.id}`}><span>{String(index + 1).padStart(2, "0")}</span>{section.title}</a></li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <article class="terms-copy">
+        <p class="terms-lede">
+          The site is operated by Sidekick HQ Inc. These terms apply to the public website; paid products, subscriptions, implementation, support, and other services may be governed by separate agreements.
+        </p>
+
+        <section id="about"><p class="section-number">01</p><h2>About the Site</h2><p>The site provides general information about Sidekick HQ Inc., its products and services, early access, contact options, and related content. It is intended for lawful informational and business use.</p></section>
+
+        <section id="service-agreement"><p class="section-number">02</p><h2>No Service Agreement Created by Website Alone</h2><p>Using the site, requesting early access, submitting a form, requesting a quote, or communicating through the site does not by itself create a client, contractor, advisory, fiduciary, managed-services, or other formal service relationship.</p><p>Paid services, subscriptions, support, consulting, implementation, hosting, and managed services are governed by the written agreements, proposals, statements of work, order forms, or invoices accepted by the parties. If those documents conflict with these Terms of Use, the separate service agreement controls.</p></section>
+
+        <section id="accuracy"><p class="section-number">03</p><h2>Accuracy and Informational Nature of Content</h2><p>We work to keep the site current, but we do not guarantee that it is complete, accurate, error-free, or continuously up to date. Site content is general information and may change without notice.</p></section>
+
+        <section id="permitted-use"><p class="section-number">04</p><h2>Permitted Use</h2><p>You may use the site only for lawful purposes and in accordance with these terms. You agree not to:</p><ul><li>violate any applicable law or regulation;</li><li>interfere with the site’s operation or security;</li><li>attempt unauthorized access to any site, server, network, account, or data;</li><li>scrape, copy, or harvest content or data in an abusive, deceptive, or unlawful manner;</li><li>upload malicious code or harmful material; or</li><li>use the site to spam, misrepresent, or infringe another person’s rights.</li></ul></section>
+
+        <section id="intellectual-property"><p class="section-number">05</p><h2>Intellectual Property</h2><p>Unless stated otherwise, the site and its text, graphics, branding, layout, logos, icons, images, software, and other materials are owned by or licensed to Sidekick HQ Inc. and protected by applicable intellectual-property laws.</p><p>You may view and print reasonable portions for internal business consideration. Except as permitted by law, you may not reproduce, republish, distribute, modify, create derivative works from, or commercially exploit site content without prior written permission.</p></section>
+
+        <section id="third-parties"><p class="section-number">06</p><h2>Third-Party Tools, Platforms, and Links</h2><p>The site may use or link to third-party services, software, content, and websites. Sidekick HQ Inc. does not control and is not responsible for third-party content, availability, security, policies, or practices. Your use of those services is governed by their own terms and policies.</p></section>
+
+        <section id="submissions"><p class="section-number">07</p><h2>User Submissions</h2><p>If you send information through a form, early-access request, upload, message, or feedback channel, you represent that you have the right to provide it and agree not to submit unlawful, misleading, infringing, defamatory, or malicious material.</p><p>You authorize Sidekick HQ Inc. to use the submission as reasonably necessary to respond, evaluate the request, provide services, manage early access, or improve business processes. Do not submit highly sensitive personal information through general forms unless we specifically request it through an approved secure method.</p></section>
+
+        <section id="availability"><p class="section-number">08</p><h2>Availability and Security</h2><p>We may modify, suspend, restrict, or discontinue any part of the site without notice. We do not guarantee uninterrupted access or that the site will always be secure or free from bugs, malware, or other harmful components.</p></section>
+
+        <section id="warranties"><p class="section-number">09</p><h2>Disclaimer of Warranties</h2><p>To the fullest extent permitted by law, the site is provided “as is” and “as available,” without warranties, representations, or conditions of any kind, whether express, implied, or statutory. This includes implied warranties or conditions of merchantability, fitness for a particular purpose, title, non-infringement, availability, and compatibility.</p></section>
+
+        <section id="liability"><p class="section-number">10</p><h2>Limitation of Liability</h2><p>To the fullest extent permitted by law, Sidekick HQ Inc. and its directors, officers, employees, contractors, affiliates, licensors, and service providers are not liable for indirect, incidental, consequential, special, exemplary, punitive, or loss-of-profit damages related to:</p><ul><li>use of or inability to use the site;</li><li>errors, interruptions, downtime, or inaccuracies;</li><li>unauthorized access to or alteration of transmissions or data;</li><li>third-party acts, services, or content; or</li><li>malware, viruses, or harmful components.</li></ul><p>Where liability cannot be excluded, it is limited to the minimum amount permitted by applicable law.</p></section>
+
+        <section id="indemnity"><p class="section-number">11</p><h2>Indemnity</h2><p>You agree to indemnify and hold harmless Sidekick HQ Inc. and its directors, officers, employees, contractors, affiliates, and service providers from claims, damages, losses, liabilities, and costs arising from your misuse of the site, violation of these terms, infringement of another person’s rights, or submissions and communications through the site.</p></section>
+
+        <section id="privacy"><p class="section-number">12</p><h2>Privacy</h2><p>Your use of the site is also subject to our <a href="/legal/privacy">Privacy Policy</a> and <a href="/legal/cookies">Cookie Notice</a>, which describe how personal information and website technologies are handled.</p></section>
+
+        <section id="changes"><p class="section-number">13</p><h2>Changes to the Site or Terms</h2><p>We may update the site and these Terms of Use at any time. The revised version will be posted with an updated effective date. Continued use after the changes take effect constitutes acceptance of the revised terms to the extent permitted by law.</p></section>
+
+        <section id="governing-law"><p class="section-number">14</p><h2>Governing Law</h2><p>These Terms of Use are governed by the laws of Alberta and the federal laws of Canada applicable in Alberta, without regard to conflict-of-law rules.</p><p>Any dispute relating to the site or these terms will be brought exclusively before courts located in Alberta unless applicable law requires otherwise.</p></section>
+
+        <section id="contact" class="contact-section"><p class="section-number">15</p><h2>Contact</h2><p>Questions about these Terms of Use may be directed to:</p><address><strong>Sidekick HQ Inc.</strong><br /><span>{address}</span><br />Phone: <a href="tel:+18254792600">(825) 479-2600</a><br />Email: <a href="mailto:privacy@sidekickhq.ca">privacy@sidekickhq.ca</a></address><a class="return-link" href="/">Return to Sidekick →</a></section>
+      </article>
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  :global(html) { scroll-padding-top: 7rem; }
+  .terms-hero { position: relative; overflow: hidden; padding-block: clamp(5rem, 9vw, 9rem); background: radial-gradient(circle at 82% 42%, rgb(5 168 162 / 22%), transparent 25rem), var(--sk-color-navy-950); color: white; isolation: isolate; }
+  .terms-hero::after { position: absolute; inset: auto 0 0; height: 8rem; background: linear-gradient(transparent, rgb(3 13 34 / 48%)); content: ""; pointer-events: none; }
+  .terms-orbit { position: absolute; top: -21rem; right: -10rem; z-index: -1; width: 54rem; height: 54rem; border: 1px solid rgb(120 222 211 / 20%); border-radius: 50%; box-shadow: 0 0 0 8rem rgb(5 168 162 / 3%), 0 0 0 16rem rgb(5 168 162 / 2%); }
+  .terms-hero__layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.55fr); align-items: end; gap: clamp(4rem, 10vw, 10rem); }
+  .back-link { display: inline-block; margin-bottom: clamp(4rem, 9vw, 8rem); color: rgb(255 255 255 / 68%); font-size: 0.82rem; text-decoration: none; }
+  .terms-eyebrow { margin-bottom: 1rem; color: #78ded3; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  h1 { max-width: 9ch; font-size: clamp(4rem, 10vw, 8.6rem); font-weight: 600; letter-spacing: -0.065em; line-height: 0.88; }
+  .terms-intro { max-width: 42rem; margin-top: 2rem; color: rgb(255 255 255 / 72%); font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.6; text-wrap: pretty; }
+  .terms-meta { display: grid; border-top: 1px solid rgb(255 255 255 / 18%); }
+  .terms-meta div { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid rgb(255 255 255 / 18%); }
+  .terms-meta dt { color: rgb(255 255 255 / 48%); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .terms-meta dd { margin: 0; color: rgb(255 255 255 / 82%); font-size: 0.88rem; line-height: 1.45; }
+  .terms-surface { padding-block: clamp(5rem, 9vw, 9rem); background: #f7f8fb; color: var(--sk-color-ink); }
+  .terms-layout { display: grid; grid-template-columns: minmax(13rem, 0.42fr) minmax(0, 1fr); align-items: start; gap: clamp(4rem, 10vw, 10rem); }
+  .terms-index { position: sticky; top: 7rem; max-height: calc(100vh - 9rem); overflow: auto; padding-right: 1rem; }
+  .terms-index > p { margin-bottom: 1.2rem; color: #078d89; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .terms-index ol { display: grid; margin: 0; padding: 0; list-style: none; }
+  .terms-index a { display: grid; grid-template-columns: 2rem 1fr; gap: 0.6rem; padding-block: 0.58rem; border-bottom: 1px solid var(--sk-color-line); color: var(--sk-color-ink-muted); font-size: 0.76rem; line-height: 1.35; text-decoration: none; }
+  .terms-index a:hover { color: #078d89; }
+  .terms-index a span { color: #078d89; font-family: var(--sk-font-heading); font-variant-numeric: tabular-nums; }
+  .terms-copy { position: relative; max-width: 52rem; }
+  .terms-copy::before { position: absolute; top: 1rem; bottom: 0; left: -2.5rem; width: 1px; background: linear-gradient(#05a8a2, var(--sk-color-blue-500) 72%, transparent); content: ""; }
+  .terms-lede { margin-bottom: clamp(5rem, 10vw, 9rem); color: var(--sk-color-ink); font-family: var(--sk-font-heading); font-size: clamp(1.55rem, 3vw, 2.6rem); letter-spacing: -0.035em; line-height: 1.25; text-wrap: pretty; }
+  .terms-copy section { padding-block: clamp(3rem, 6vw, 5rem); border-top: 1px solid var(--sk-color-line); scroll-margin-top: 7rem; }
+  .section-number { margin-bottom: 1rem; color: #078d89; font-family: var(--sk-font-heading); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; }
+  .terms-copy h2 { max-width: 19ch; margin-bottom: 2rem; font-size: clamp(2rem, 4vw, 3.6rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
+  .terms-copy p, .terms-copy li, .terms-copy address { color: var(--sk-color-ink-muted); font-size: clamp(1rem, 1.2vw, 1.12rem); line-height: 1.75; }
+  .terms-copy p + p { margin-top: 1.2rem; }
+  .terms-copy ul { display: grid; gap: 0.55rem; margin: 1.2rem 0 0; padding-left: 1.25rem; }
+  .terms-copy li::marker { color: #078d89; }
+  .terms-copy a { color: var(--sk-color-blue-700); text-underline-offset: 0.2em; }
+  .terms-copy address { padding: 1.5rem; border-left: 3px solid #05a8a2; background: white; font-style: normal; }
+  .terms-copy address strong { color: var(--sk-color-ink); }
+  .contact-section { padding: clamp(2rem, 5vw, 4rem) !important; border: 0 !important; border-radius: 1.5rem; background: var(--sk-color-navy-950); color: white; }
+  .contact-section .section-number { color: #78ded3; }
+  .contact-section h2 { color: white; }
+  .contact-section > p { color: rgb(255 255 255 / 62%); }
+  .contact-section address { border-color: #78ded3; background: rgb(255 255 255 / 7%); color: rgb(255 255 255 / 78%); }
+  .contact-section address strong, .contact-section address a { color: white; }
+  .return-link { display: inline-flex; margin-top: 2rem; color: white !important; font-weight: 700; text-decoration: none; }
+  @media (max-width: 64rem) { .terms-hero__layout { grid-template-columns: 1fr; } .back-link { margin-bottom: 4rem; } .terms-layout { grid-template-columns: 1fr; } .terms-index { position: static; max-height: none; padding-right: 0; } .terms-index ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.5rem; } .terms-copy { max-width: none; } .terms-copy::before { display: none; } }
+  @media (max-width: 40rem) { .terms-hero { padding-block: 4rem 5rem; } h1 { font-size: clamp(3.7rem, 19vw, 5.5rem); } .terms-meta div { grid-template-columns: 1fr; gap: 0.35rem; } .terms-index ol { grid-template-columns: 1fr; } .contact-section { border-radius: 1rem; } }
+</style>

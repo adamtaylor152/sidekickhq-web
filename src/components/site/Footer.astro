@@ -9,7 +9,10 @@ import { PRODUCTS } from "@/content/products";
     <div class="footer__brand">
       <img src="/brand/sidekick-lockup-color-dark.svg" width="210" height="54" alt="Sidekick" />
       <p>Every part of your business, working together—with AI built in.</p>
-      <a href="/contact">Sidekick HQ Inc.<br />Canada</a>
+      <address class="footer__company">
+        <strong>Sidekick HQ Inc.</strong><br />
+        <a href="mailto:hello@sidekickhq.ca">hello@sidekickhq.ca</a>
+      </address>
     </div>
     <div>
       <h2>Products</h2>
@@ -43,7 +46,10 @@ import { PRODUCTS } from "@/content/products";
   .footer__top { display: grid; grid-template-columns: minmax(16rem, 1.4fr) repeat(3, minmax(9rem, 0.7fr)); gap: clamp(2rem, 5vw, 5rem); padding-bottom: var(--sk-space-20); }
   .footer__brand img { width: 10.5rem; height: auto; }
   .footer__brand p { max-width: 25rem; margin-top: var(--sk-space-6); color: rgb(255 255 255 / 66%); font-size: var(--sk-text-lg); }
-  .footer__brand a { display: inline-block; margin-top: var(--sk-space-8); color: var(--sk-color-blue-300); font-size: var(--sk-text-sm); text-decoration: none; }
+  .footer__company { margin-top: var(--sk-space-8); color: rgb(255 255 255 / 78%); font-size: var(--sk-text-sm); font-style: normal; }
+  .footer__company strong { color: var(--sk-color-white); font-weight: 500; }
+  .footer__company a { display: inline-block; margin-top: var(--sk-space-1); color: var(--sk-color-blue-300); text-decoration: none; }
+  .footer__company a:hover { color: var(--sk-color-white); }
   h2 { margin-bottom: var(--sk-space-5); color: rgb(255 255 255 / 45%); font-family: var(--sk-font-body); font-size: var(--sk-text-xs); letter-spacing: var(--sk-tracking-wide); text-transform: uppercase; }
   ul { display: grid; gap: var(--sk-space-3); padding: 0; margin: 0; list-style: none; }
   li a { color: rgb(255 255 255 / 78%); font-size: var(--sk-text-sm); text-decoration: none; }

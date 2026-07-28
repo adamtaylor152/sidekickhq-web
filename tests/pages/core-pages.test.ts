@@ -18,14 +18,14 @@ describe("core marketing pages", () => {
     expect(routes.filter((route) => !existsSync(path(route)))).toEqual([]);
   });
 
-  it("builds the homepage around the approved promise and discovery paths", () => {
+  it("builds the homepage around the early-access invitation", () => {
     if (!existsSync(path(routes[0]))) return;
     const homepage = source(routes[0]);
-    expect(homepage).toContain("Every part of your business, working together—with AI built in.");
-    expect(homepage).toContain("ProductConstellation");
-    expect(homepage).toContain("AiOperatingLayer");
-    expect(homepage).toContain("IndustryPathways");
-    expect(homepage).toContain("HardwareStage");
+    expect(homepage).toContain("Sidekick - CRM & ERP for Small Business");
+    expect(homepage).toContain("Request Early Invite");
+    expect(homepage).toContain("YouTube video coming soon");
+    expect(homepage).toContain("/api/early-access");
+    expect(homepage).toContain("/api/places/autocomplete");
   });
 
   it("keeps embedded AI, AI Agents, and Voice AI commercially distinct", () => {

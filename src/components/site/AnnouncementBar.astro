@@ -1,7 +1,16 @@
-<aside class="announcement" aria-label="Trial offer">
-  <a href="/pricing">
-    <span>30 days. No credit card. Eligible software only.</span>
-    <span aria-hidden="true">Explore pricing&nbsp;→</span>
+---
+interface Props {
+  campaign?: "early-access";
+}
+
+const { campaign } = Astro.props;
+const earlyAccess = campaign === "early-access";
+---
+
+<aside class="announcement" aria-label={earlyAccess ? "Early access" : "Trial offer"}>
+  <a href={earlyAccess ? "#invite" : "/pricing"}>
+    <span>{earlyAccess ? "Founding access is opening to small businesses across Canada and the United States." : "30 days. No credit card. Eligible software only."}</span>
+    <span aria-hidden="true">{earlyAccess ? "Join the list →" : "Explore pricing →"}</span>
   </a>
 </aside>
 

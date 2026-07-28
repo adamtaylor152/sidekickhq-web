@@ -11,10 +11,11 @@ interface Props {
   description: string;
   canonicalPath: string;
   theme?: "light" | "dark";
+  campaign?: "early-access";
   structuredData?: Record<string, unknown> | readonly Record<string, unknown>[];
 }
 
-const { title, description, canonicalPath, theme = "light", structuredData } = Astro.props;
+const { title, description, canonicalPath, theme = "light", campaign, structuredData } = Astro.props;
 const canonical = new URL(canonicalPath, Astro.site ?? "https://sidekickhq.ca");
 const structuredDataJson = structuredData
   ? JSON.stringify(structuredData).replaceAll("<", "\\u003c")
@@ -35,10 +36,10 @@ const structuredDataJson = structuredData
   </head>
   <body>
     <SkipLink />
-    <AnnouncementBar />
-    <Header />
+    <AnnouncementBar campaign={campaign} />
+    <Header campaign={campaign} />
     <main id="main-content"><slot /></main>
-    <Footer />
+    {campaign !== "early-access" && <Footer />}
     <script is:inline define:vars={{ priceOffers: PRICE_OFFERS }}>
       const detectCountry = () => {
         const saved = localStorage.getItem("sidekick-country");

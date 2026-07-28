@@ -1,0 +1,269 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+
+const address = "888 3rd St SW, Suite 1000, Calgary, AB T2P 5C5";
+const sections = [
+  { id: "who-we-are", title: "Who We Are" },
+  { id: "scope", title: "Scope" },
+  { id: "what-we-collect", title: "What We Collect" },
+  { id: "how-we-collect", title: "How We Collect Information" },
+  { id: "how-we-use", title: "How We Use Personal Information" },
+  { id: "legal-basis", title: "Legal Basis and Consent" },
+  { id: "marketing", title: "Marketing Communications and CASL" },
+  { id: "cookies", title: "Cookies, Pixels, and Similar Technologies" },
+  { id: "sharing", title: "How We Share Personal Information" },
+  { id: "cross-border", title: "Cross-Border Processing" },
+  { id: "retention", title: "Retention" },
+  { id: "safeguards", title: "Safeguards" },
+  { id: "rights", title: "Your Rights" },
+  { id: "third-parties", title: "Third-Party Services and Links" },
+  { id: "children", title: "Children’s Privacy" },
+  { id: "incidents", title: "Privacy Incidents" },
+  { id: "changes", title: "Changes to This Privacy Policy" },
+  { id: "contact", title: "Contact Us" },
+] as const;
+---
+
+<SiteLayout
+  title="Privacy Policy | Sidekick HQ Inc."
+  description="How Sidekick HQ Inc. collects, uses, discloses, stores, and protects personal information."
+  canonicalPath="/legal/privacy"
+  theme="dark"
+>
+  <header class="policy-hero">
+    <div class="policy-orbit" aria-hidden="true"></div>
+    <div class="sk-container policy-hero__layout">
+      <div>
+        <a class="back-link" href="/">← Back to Sidekick</a>
+        <p class="policy-eyebrow">Legal · Privacy</p>
+        <h1>Privacy Policy</h1>
+        <p class="policy-intro">
+          Sidekick HQ Inc. respects your privacy. This policy explains what we collect, why we use it, who we may share it with, and the choices available to you.
+        </p>
+      </div>
+      <dl class="policy-meta">
+        <div><dt>Effective date</dt><dd>July 27, 2026</dd></div>
+        <div><dt>Organization</dt><dd>Sidekick HQ Inc.</dd></div>
+        <div><dt>Office</dt><dd>{address}</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <div class="policy-surface">
+    <div class="sk-container policy-layout">
+      <aside class="policy-index">
+        <p>Contents</p>
+        <nav aria-label="Privacy policy contents">
+          <ol>
+            {sections.map((section, index) => (
+              <li>
+                <a href={`#${section.id}`}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {section.title}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <article class="policy-copy">
+        <p class="policy-lede">
+          Sidekick HQ Inc. (“Sidekick,” “we,” “us,” or “our”) is committed to protecting personal information collected through sidekickhq.ca, our communications, and our services. This Privacy Policy applies when you visit our website, request early access, contact us, purchase services, or otherwise interact with Sidekick.
+        </p>
+
+        <section id="who-we-are">
+          <p class="section-number">01</p>
+          <h2>Who We Are</h2>
+          <address>
+            <strong>Sidekick HQ Inc.</strong><br />
+            <span>{address}</span><br />
+            Phone: <a href="tel:+18254792600">(825) 479-2600</a><br />
+            Email: <a href="mailto:privacy@sidekickhq.ca">privacy@sidekickhq.ca</a>
+          </address>
+        </section>
+
+        <section id="scope">
+          <p class="section-number">02</p>
+          <h2>Scope</h2>
+          <p>This Privacy Policy applies to personal information we collect through:</p>
+          <ul>
+            <li>sidekickhq.ca and related Sidekick web properties;</li>
+            <li>early-access, contact, quote, booking, and support forms;</li>
+            <li>email, phone, SMS, and other business communications;</li>
+            <li>customer onboarding, account administration, and service delivery;</li>
+            <li>billing and payment workflows; and</li>
+            <li>analytics, advertising, and customer-relationship tools used with our website and services.</li>
+          </ul>
+          <p>It does not govern third-party websites, services, or platforms that you use separately or access through an external link.</p>
+        </section>
+
+        <section id="what-we-collect">
+          <p class="section-number">03</p>
+          <h2>What We Collect</h2>
+          <h3>Contact and inquiry information</h3>
+          <ul><li>name, company name, email address, phone number, address, and job title;</li><li>information included in a form, email, support request, or message;</li><li>company details returned when you choose a business through Google Places; and</li><li>your choice about whether we may display your first name and last initial in early-access activity.</li></ul>
+          <h3>Service and account information</h3>
+          <ul><li>service requests, project details, and account preferences;</li><li>technical or operational details you provide;</li><li>communications and support history; and</li><li>records related to proposals, contracts, subscriptions, and invoices.</li></ul>
+          <h3>Payment and transaction information</h3>
+          <p>Payment providers may collect and process payment information when you purchase products or services. We may receive billing details, payment status, invoice information, and transaction identifiers. We do not store full payment-card numbers unless expressly stated in writing and handled lawfully through an approved provider.</p>
+          <h3>Website, device, and marketing information</h3>
+          <ul><li>IP address, browser, operating system, device identifiers, and approximate location;</li><li>pages viewed, referring source, visit time, clicks, sessions, and interactions; and</li><li>subscription, campaign, and customer-relationship information associated with your communications.</li></ul>
+        </section>
+
+        <section id="how-we-collect">
+          <p class="section-number">04</p>
+          <h2>How We Collect Information</h2>
+          <p>We collect information directly from you, automatically through website technologies and logs, from providers that support our business, and from publicly available business sources where lawful and appropriate. When you select a company suggestion, we may request authoritative business details from Google Places.</p>
+        </section>
+
+        <section id="how-we-use">
+          <p class="section-number">05</p>
+          <h2>How We Use Personal Information</h2>
+          <p>We may use personal information to:</p>
+          <ul><li>manage early-access requests and customer relationships;</li><li>respond to questions and provide quotes, consultations, onboarding, services, and support;</li><li>create accounts, records, invoices, and transactions;</li><li>process and reconcile payments;</li><li>operate, secure, measure, and improve our website, products, and communications;</li><li>detect and investigate fraud, abuse, or security incidents;</li><li>meet legal, regulatory, contractual, insurance, tax, and accounting obligations;</li><li>establish, exercise, or defend legal claims; and</li><li>send operational or marketing communications where permitted by law.</li></ul>
+        </section>
+
+        <section id="legal-basis">
+          <p class="section-number">06</p>
+          <h2>Legal Basis and Consent</h2>
+          <p>We collect, use, and disclose personal information with consent where applicable law requires it, or where law otherwise permits or requires the activity. Consent may be express or implied based on the circumstances and the nature of your interaction with us.</p>
+          <p>You may withdraw consent to certain uses, subject to legal, contractual, or operational restrictions and reasonable notice.</p>
+        </section>
+
+        <section id="marketing">
+          <p class="section-number">07</p>
+          <h2>Marketing Communications and CASL</h2>
+          <p>Commercial electronic messages are sent in accordance with applicable law, including Canada’s anti-spam legislation. Marketing messages generally identify Sidekick HQ Inc., provide contact information, and include an unsubscribe or equivalent opt-out method.</p>
+          <p>You may unsubscribe through a message’s unsubscribe link or by contacting <a href="mailto:privacy@sidekickhq.ca">privacy@sidekickhq.ca</a>. We may continue to send necessary account, transaction, service, security, or relationship communications.</p>
+        </section>
+
+        <section id="cookies">
+          <p class="section-number">08</p>
+          <h2>Cookies, Pixels, and Similar Technologies</h2>
+          <p>We may use cookies, pixels, tags, scripts, logs, and similar technologies to operate our site, remember preferences, understand website use, secure our services, and measure communications or campaigns. These may include analytics, advertising, CRM, hosting, security, performance, and Google Places technologies.</p>
+          <p>You can manage certain technologies through browser settings and any cookie controls we make available. See our <a href="/legal/cookies">Cookie Notice</a> for more information.</p>
+        </section>
+
+        <section id="sharing">
+          <p class="section-number">09</p>
+          <h2>How We Share Personal Information</h2>
+          <p><strong>We do not sell personal information.</strong></p>
+          <p>We may disclose information to employees, contractors, professional advisors, payment processors, and providers of hosting, communications, analytics, CRM, security, support, or business-search services. We may also disclose information to authorities where permitted or required by law, in connection with a business transaction, or to another party with your consent or at your direction.</p>
+        </section>
+
+        <section id="cross-border">
+          <p class="section-number">10</p>
+          <h2>Cross-Border Processing</h2>
+          <p>Some providers may process or store personal information outside Alberta or Canada. Information in another jurisdiction may be accessible to courts, regulators, law-enforcement agencies, or national-security authorities under that jurisdiction’s laws.</p>
+        </section>
+
+        <section id="retention">
+          <p class="section-number">11</p>
+          <h2>Retention</h2>
+          <p>We keep personal information only as long as reasonably necessary for the purposes in this policy and to deliver services, maintain business and financial records, meet legal obligations, resolve disputes, enforce agreements, or investigate incidents and complaints.</p>
+          <p>When information is no longer required, we securely delete, destroy, or anonymize it where appropriate.</p>
+        </section>
+
+        <section id="safeguards">
+          <p class="section-number">12</p>
+          <h2>Safeguards</h2>
+          <p>We use administrative, technical, and physical safeguards appropriate to the information’s sensitivity. Measures may include access controls, account protections, encryption where appropriate, approved payment providers, secured hosting, monitoring, logging, and internal confidentiality controls.</p>
+          <p>No system can guarantee absolute security, and transmitting information over the internet is never entirely risk-free.</p>
+        </section>
+
+        <section id="rights">
+          <p class="section-number">13</p>
+          <h2>Your Rights</h2>
+          <p>Subject to applicable law, you may request access to or correction of your personal information and information about how it has been used or disclosed. You may also ask us to remove your name from public early-access activity.</p>
+          <p>Send a privacy request to <a href="mailto:privacy@sidekickhq.ca">privacy@sidekickhq.ca</a>. We may need to verify your identity before responding.</p>
+        </section>
+
+        <section id="third-parties">
+          <p class="section-number">14</p>
+          <h2>Third-Party Services and Links</h2>
+          <p>External websites, platforms, and tools are governed by their own privacy policies and terms. Review those policies before providing information to a third party.</p>
+        </section>
+
+        <section id="children">
+          <p class="section-number">15</p>
+          <h2>Children’s Privacy</h2>
+          <p>Our website and services are intended for businesses and adult users. We do not knowingly collect children’s personal information in circumstances requiring parental consent without complying with applicable law.</p>
+        </section>
+
+        <section id="incidents">
+          <p class="section-number">16</p>
+          <h2>Privacy Incidents</h2>
+          <p>If we learn of a privacy breach involving information under our control, we will investigate and take steps appropriate to the circumstances, including notice where applicable law requires it.</p>
+        </section>
+
+        <section id="changes">
+          <p class="section-number">17</p>
+          <h2>Changes to This Privacy Policy</h2>
+          <p>We may update this policy from time to time. We will post the revised version on this page and update its effective date. Continued use after a change takes effect constitutes acceptance to the extent permitted by law.</p>
+        </section>
+
+        <section id="contact" class="contact-section">
+          <p class="section-number">18</p>
+          <h2>Contact Us</h2>
+          <p>For privacy questions, complaints, or requests, contact:</p>
+          <address>
+            <strong>Sidekick HQ Inc.</strong><br />
+            <span>{address}</span><br />
+            Phone: <a href="tel:+18254792600">(825) 479-2600</a><br />
+            Email: <a href="mailto:privacy@sidekickhq.ca">privacy@sidekickhq.ca</a>
+          </address>
+          <a class="return-link" href="/#invite">Return to the early-access invitation →</a>
+        </section>
+      </article>
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  :global(html) { scroll-padding-top: 7rem; }
+  .policy-hero { position: relative; overflow: hidden; padding-block: clamp(5rem, 9vw, 9rem); background: radial-gradient(circle at 82% 42%, rgb(29 98 226 / 32%), transparent 27rem), var(--sk-color-navy-950); color: white; isolation: isolate; }
+  .policy-hero::after { position: absolute; inset: auto 0 0; height: 8rem; background: linear-gradient(transparent, rgb(3 13 34 / 48%)); content: ""; pointer-events: none; }
+  .policy-orbit { position: absolute; top: -21rem; right: -10rem; z-index: -1; width: 54rem; height: 54rem; border: 1px solid rgb(130 189 255 / 20%); border-radius: 50%; box-shadow: 0 0 0 8rem rgb(69 160 255 / 3%), 0 0 0 16rem rgb(69 160 255 / 2%); }
+  .policy-hero__layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.55fr); align-items: end; gap: clamp(4rem, 10vw, 10rem); }
+  .back-link { display: inline-block; margin-bottom: clamp(4rem, 9vw, 8rem); color: rgb(255 255 255 / 68%); font-size: 0.82rem; text-decoration: none; }
+  .back-link:hover { color: white; }
+  .policy-eyebrow { margin-bottom: 1rem; color: #78ded3; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  h1 { max-width: 8ch; font-size: clamp(4rem, 10vw, 8.6rem); font-weight: 600; letter-spacing: -0.065em; line-height: 0.88; }
+  .policy-intro { max-width: 42rem; margin-top: 2rem; color: rgb(255 255 255 / 72%); font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.6; text-wrap: pretty; }
+  .policy-meta { display: grid; border-top: 1px solid rgb(255 255 255 / 18%); }
+  .policy-meta div { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding-block: 1rem; border-bottom: 1px solid rgb(255 255 255 / 18%); }
+  .policy-meta dt { color: rgb(255 255 255 / 48%); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .policy-meta dd { margin: 0; color: rgb(255 255 255 / 82%); font-size: 0.88rem; line-height: 1.45; }
+  .policy-surface { padding-block: clamp(5rem, 9vw, 9rem); background: #f7f8fb; color: var(--sk-color-ink); }
+  .policy-layout { display: grid; grid-template-columns: minmax(13rem, 0.42fr) minmax(0, 1fr); align-items: start; gap: clamp(4rem, 10vw, 10rem); }
+  .policy-index { position: sticky; top: 7rem; max-height: calc(100vh - 9rem); overflow: auto; padding-right: 1rem; }
+  .policy-index > p { margin-bottom: 1.2rem; color: var(--sk-color-blue-600); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .policy-index ol { display: grid; margin: 0; padding: 0; list-style: none; }
+  .policy-index a { display: grid; grid-template-columns: 2rem 1fr; gap: 0.6rem; padding-block: 0.58rem; border-bottom: 1px solid var(--sk-color-line); color: var(--sk-color-ink-muted); font-size: 0.76rem; line-height: 1.35; text-decoration: none; }
+  .policy-index a:hover { color: var(--sk-color-blue-600); }
+  .policy-index a span { color: var(--sk-color-blue-500); font-family: var(--sk-font-heading); font-variant-numeric: tabular-nums; }
+  .policy-copy { position: relative; max-width: 52rem; }
+  .policy-copy::before { position: absolute; top: 1rem; bottom: 0; left: -2.5rem; width: 1px; background: linear-gradient(var(--sk-color-blue-500), #05a8a2 72%, transparent); content: ""; }
+  .policy-lede { margin-bottom: clamp(5rem, 10vw, 9rem); color: var(--sk-color-ink); font-family: var(--sk-font-heading); font-size: clamp(1.55rem, 3vw, 2.6rem); letter-spacing: -0.035em; line-height: 1.25; text-wrap: pretty; }
+  .policy-copy section { padding-block: clamp(3rem, 6vw, 5rem); border-top: 1px solid var(--sk-color-line); scroll-margin-top: 7rem; }
+  .section-number { margin-bottom: 1rem; color: var(--sk-color-blue-600); font-family: var(--sk-font-heading); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; }
+  .policy-copy h2 { max-width: 18ch; margin-bottom: 2rem; font-size: clamp(2rem, 4vw, 3.6rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
+  .policy-copy h3 { margin: 2.4rem 0 0.8rem; font-size: 1.1rem; letter-spacing: -0.02em; }
+  .policy-copy p, .policy-copy li, .policy-copy address { color: var(--sk-color-ink-muted); font-size: clamp(1rem, 1.2vw, 1.12rem); line-height: 1.75; }
+  .policy-copy p + p { margin-top: 1.2rem; }
+  .policy-copy ul { display: grid; gap: 0.55rem; margin: 1.2rem 0 0; padding-left: 1.25rem; }
+  .policy-copy li::marker { color: var(--sk-color-blue-500); }
+  .policy-copy a { color: var(--sk-color-blue-700); text-underline-offset: 0.2em; }
+  .policy-copy address { padding: 1.5rem; border-left: 3px solid #05a8a2; background: white; font-style: normal; }
+  .policy-copy address strong { color: var(--sk-color-ink); }
+  .contact-section { margin-bottom: 0; padding: clamp(2rem, 5vw, 4rem) !important; border: 0 !important; border-radius: 1.5rem; background: var(--sk-color-navy-950); color: white; }
+  .contact-section .section-number { color: #78ded3; }
+  .contact-section h2 { color: white; }
+  .contact-section > p { color: rgb(255 255 255 / 62%); }
+  .contact-section address { border-color: #78ded3; background: rgb(255 255 255 / 7%); color: rgb(255 255 255 / 78%); }
+  .contact-section address strong, .contact-section address a { color: white; }
+  .return-link { display: inline-flex; margin-top: 2rem; color: white !important; font-weight: 700; text-decoration: none; }
+  @media (max-width: 64rem) { .policy-hero__layout { grid-template-columns: 1fr; } .back-link { margin-bottom: 4rem; } .policy-layout { grid-template-columns: 1fr; } .policy-index { position: static; max-height: none; padding-right: 0; } .policy-index ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.5rem; } .policy-copy { max-width: none; } .policy-copy::before { display: none; } }
+  @media (max-width: 40rem) { .policy-hero { padding-block: 4rem 5rem; } h1 { font-size: clamp(3.7rem, 19vw, 5.5rem); } .policy-meta div { grid-template-columns: 1fr; gap: 0.35rem; } .policy-index ol { grid-template-columns: 1fr; } .contact-section { border-radius: 1rem; } }
+</style>

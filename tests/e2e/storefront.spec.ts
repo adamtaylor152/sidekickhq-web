@@ -1,10 +1,91 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage presents the connected product platform", async ({ page }) => {
+test("homepage presents the connected early-access invitation", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Every part of your business");
-  await expect(page.getByRole("heading", { name: "Sidekick Appointments" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Browse hardware" })).toHaveCount(2);
+  await expect(page).toHaveTitle("Sidekick - CRM & ERP for Small Business");
+  const hero = page.getByRole("region", { name: "CRM & ERP for small business, finally on the same side." });
+  await expect(hero.getByRole("heading", { level: 1 })).toContainText("CRM & ERP");
+  await expect(page.getByText("YouTube video coming soon")).toBeVisible();
+  await expect(hero.getByRole("button", { name: "Request Early Invite" })).toBeVisible();
+  await expect(hero.locator("[data-social-count]")).toHaveText("2,312");
+  await expect(hero.getByText("small businesses have requested early access.", { exact: true })).toBeVisible();
+  await expect
+    .poll(() => page.getByRole("banner").getByRole("img", { name: "Sidekick" }).evaluate((logo) => logo.getBoundingClientRect().width))
+    .toBeGreaterThanOrEqual(168);
+  await expect(page.getByRole("banner").getByRole("link", { name: "Login", exact: true })).toHaveAttribute("href", "https://app.sidekickhq.ca");
+  const legal = page.getByRole("navigation", { name: "Legal" });
+  await expect(legal.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/legal/privacy");
+  await expect(legal.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "/legal/terms");
+  await expect(page.getByRole("contentinfo")).toHaveCount(0);
+});
+
+test("invite form sends an explicit marketing preference and offers existing-user login", async ({ page }) => {
+  let submittedBody: Record<string, unknown> | undefined;
+  await page.route("**/api/places/autocomplete**", (route) => route.fulfill({ json: { data: { suggestions: [] } } }));
+  await page.route("**/api/early-access", async (route) => {
+    if (route.request().method() === "POST") {
+      submittedBody = route.request().postDataJSON() as Record<string, unknown>;
+      await route.fulfill({ status: 201, json: { data: { count: 2_313, signupNumber: 2_313 } } });
+      return;
+    }
+    await route.fulfill({ json: { data: { count: 2_312, people: [] } } });
+  });
+
+  await page.goto("/#invite");
+  const invite = page.getByRole("region", { name: "Put your business near the front of the line." });
+  const publicDisplay = invite.getByRole("checkbox", { name: /show my first name and last initial/i });
+  const marketing = invite.getByRole("checkbox", { name: /marketing communications/i });
+  await expect(publicDisplay).toBeChecked();
+  await expect(marketing).not.toBeChecked();
+  await marketing.check();
+  await invite.getByRole("textbox", { name: "First name" }).fill("Jamie");
+  await invite.getByRole("textbox", { name: "Last name" }).fill("Taylor");
+  await invite.getByRole("textbox", { name: "Email address" }).fill("jamie@example.com");
+  await invite.getByRole("combobox", { name: /Company/ }).fill("Taylor & Co. Repair");
+  await invite.getByRole("button", { name: "Request Early Invite" }).click();
+
+  await expect.poll(() => submittedBody?.marketingCommunicationsConsent).toBe(true);
+  await expect(page.getByRole("link", { name: "Already granted early access?" })).toHaveAttribute("href", "https://app.sidekickhq.ca");
+});
+
+test("landing page links to a complete Sidekick privacy policy", async ({ page }) => {
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Legal" })
+    .getByRole("link", { name: "Privacy Policy" })
+    .click();
+
+  await expect(page).toHaveURL("/legal/privacy");
+  await expect(page.getByRole("heading", { level: 1, name: "Privacy Policy" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Privacy policy contents" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "What We Collect" })).toBeVisible();
+  await expect(page.getByText("888 3rd St SW, Suite 1000, Calgary, AB T2P 5C5", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("2691003 ALBERTA INC.")).toHaveCount(0);
+  await expect(page.getByText("Hero IT", { exact: true })).toHaveCount(0);
+});
+
+test("landing page links to complete Sidekick terms of use", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("navigation", { name: "Legal" }).getByRole("link", { name: "Terms of Use" }).click();
+
+  await expect(page).toHaveURL("/legal/terms");
+  await expect(page.getByRole("heading", { level: 1, name: "Terms of Use" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Terms of use contents" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "Permitted Use" })).toBeVisible();
+  await expect(page.getByText("888 3rd St SW, Suite 1000, Calgary, AB T2P 5C5", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("(825) 479-2600", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("2691003 ALBERTA INC.")).toHaveCount(0);
+  await expect(page.getByText("Hero IT", { exact: true })).toHaveCount(0);
+});
+
+test("site company block shows the support email without linking to the contact form", async ({ page }) => {
+  await page.goto("/legal/terms");
+  const footer = page.getByRole("contentinfo");
+
+  await expect(footer.getByText("Sidekick HQ Inc.", { exact: true })).toBeVisible();
+  await expect(footer.getByRole("link", { name: "hello@sidekickhq.ca" })).toHaveAttribute("href", "mailto:hello@sidekickhq.ca");
+  await expect(footer.getByText("Canada", { exact: true })).toHaveCount(0);
+  await expect(footer.locator('a[href="/contact"]')).toHaveCount(0);
 });
 
 test("Voice uses activation and never advertises a trial", async ({ page }) => {

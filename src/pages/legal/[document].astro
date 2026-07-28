@@ -2,7 +2,9 @@
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import { LEGAL_DOCUMENTS } from "@/content/legal-documents";
 export const prerender = true;
-export const getStaticPaths=()=>Object.entries(LEGAL_DOCUMENTS).map(([document,content])=>({params:{document},props:{content}}));
+export const getStaticPaths=()=>Object.entries(LEGAL_DOCUMENTS)
+  .filter(([document]) => document !== "privacy" && document !== "terms")
+  .map(([document,content])=>({params:{document},props:{content}}));
 const { content }=Astro.props;
 ---
 <SiteLayout title={`${content.title} | Sidekick`} description={content.intro} canonicalPath={`/legal/${Astro.params.document}`}>
