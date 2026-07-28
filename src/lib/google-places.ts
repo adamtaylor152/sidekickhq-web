@@ -116,7 +116,7 @@ export async function autocompleteCompanies(options: {
       locationBias: {
         circle: {
           center: { latitude: 51.0447, longitude: -114.0719 },
-          radius: 60_000,
+          radius: 50_000,
         },
       },
       includePureServiceAreaBusinesses: true,

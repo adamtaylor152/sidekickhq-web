@@ -107,6 +107,11 @@ describe("Google Places server bridge", () => {
       includedRegionCodes: ["ca", "us"],
       sessionToken: "session-1",
       includePureServiceAreaBusinesses: true,
+      locationBias: {
+        circle: {
+          radius: 50_000,
+        },
+      },
     });
   });
 
